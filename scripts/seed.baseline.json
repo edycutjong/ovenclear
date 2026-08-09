@@ -1,0 +1,149 @@
+{
+  "note": "GOLDEN — regenerate with `npm run seed` after any intentional fixture change",
+  "manifestHash": "564213f9407aa95bd4c6409aa85efb0386ecf6c999196a37e608c296a4763060",
+  "manifest": {
+    "fixture": true,
+    "snapshots": [
+      {
+        "id": "tx-cottage-2026-06-03",
+        "state": "TX",
+        "fetchedAt": "2026-06-03T06:00:00.000Z",
+        "byteLength": 2119,
+        "contentSha256": "08a795935c50200688d70fc5d7ad60e4baa1d5265daea064a983f19b5e1db600"
+      },
+      {
+        "id": "ca-cottage-stub-2026-07-01",
+        "state": "CA",
+        "fetchedAt": "2026-07-01T06:00:00.000Z",
+        "byteLength": 960,
+        "contentSha256": "ad233ef630c4911cb20a8f6f0f746478aa9fb5b3970d246c30feca27a80f929c"
+      },
+      {
+        "id": "fl-cottage-stub-2026-07-01",
+        "state": "FL",
+        "fetchedAt": "2026-07-01T06:00:00.000Z",
+        "byteLength": 1001,
+        "contentSha256": "562fca14a0ca55817f05b6b3c331ef9d5c8bec2acca96c27428fce43af244ab8"
+      },
+      {
+        "id": "ga-cottage-2026-07-01",
+        "state": "GA",
+        "fetchedAt": "2026-07-01T06:00:00.000Z",
+        "byteLength": 2364,
+        "contentSha256": "ac613546c5e56dbd705163796b97b1e5c5cf367b8af8b55044c8ee0a959f1d10"
+      },
+      {
+        "id": "tx-cottage-2026-07-01",
+        "state": "TX",
+        "fetchedAt": "2026-07-01T06:00:00.000Z",
+        "byteLength": 2280,
+        "contentSha256": "45e62bae1045586cc9b8cf1b253cc5fb1ea07dee14c1dcd6c96aebc40738cf97"
+      }
+    ],
+    "namedCustomers": {
+      "rosas_bakes": {
+        "status": "eligible",
+        "verdictHash": "0aa02fa04e650ba36edcffff4a8cdb461d81a12d7d7ae0013abe3c8eb31a1b73",
+        "label": {
+          "qrId": "qr_b10254dd7415",
+          "labelId": "lbl_bc9ee824fafa2a7a",
+          "sha256": "83097ac3d61c1f6634140845d117eb1c688f679ee430b2af1903010a4449473a"
+        }
+      },
+      "cheesecake_charlie": {
+        "status": "prohibited",
+        "verdictHash": "3a128de0eef07a2ae0f8b4b143750f7c7ca814d1e5a3c1941a253e856695c700",
+        "label": null
+      },
+      "jam_june": {
+        "status": "license_required",
+        "verdictHash": "dc983d90add6909f8000b8e4a565eb2ea6b67e9d7a2fb3487ced2f2ce94c2b35",
+        "label": null
+      }
+    },
+    "txDiff": {
+      "fromHash": "08a795935c50200688d70fc5d7ad60e4baa1d5265daea064a983f19b5e1db600",
+      "toHash": "45e62bae1045586cc9b8cf1b253cc5fb1ea07dee14c1dcd6c96aebc40738cf97",
+      "deltaCount": 5,
+      "deltaIds": [
+        "d-tx-25becfdd40",
+        "d-tx-2cdc90d8ae",
+        "d-tx-64567ff11d",
+        "d-tx-935d097776",
+        "d-tx-e042ae1d42"
+      ]
+    },
+    "replay": {
+      "reissued": 9,
+      "notified": 5,
+      "noneAffectedLogged": 1,
+      "reissuedLabels": [
+        {
+          "qrId": "qr_008cd789faa2",
+          "oldLabelId": "lbl_a4a31fb18be6f08b",
+          "newLabelId": "lbl_02c0d1ef834cad88",
+          "newSha256": "9797645be399e6a1036e24fe47fcd3ee7b2079f1bc3bb5e1f6db3908f20290a8"
+        },
+        {
+          "qrId": "qr_1b8f54aca2a7",
+          "oldLabelId": "lbl_ba072fad31d68f57",
+          "newLabelId": "lbl_3d974585dda7e5e1",
+          "newSha256": "3ea62e289099c683e7e493c15a5300b8ad955dbcb289c5cc8e4d2979f85e0c7d"
+        },
+        {
+          "qrId": "qr_1d7e9c5fd199",
+          "oldLabelId": "lbl_292fbd1521289393",
+          "newLabelId": "lbl_dbbc233587e8630a",
+          "newSha256": "244046a04d221dec69077ce8dd5af28910fb43c0e60f1acfe57d5d83e4e6ff5c"
+        },
+        {
+          "qrId": "qr_399a5b13026e",
+          "oldLabelId": "lbl_26370a85dbe7d44d",
+          "newLabelId": "lbl_90ee55718b6baa2e",
+          "newSha256": "5f1143d777656559969c2d03bf279542529e24bd483d73f1e4993a221289312a"
+        },
+        {
+          "qrId": "qr_45433ae2637d",
+          "oldLabelId": "lbl_a9985b0f5c221952",
+          "newLabelId": "lbl_1255fb4172fe8855",
+          "newSha256": "286a3f30457074a2546cca44a471c30f55ed6461c25d21cdac9dbb0c4ecce4ec"
+        },
+        {
+          "qrId": "qr_4fe3ebb25483",
+          "oldLabelId": "lbl_1d7b33fac43aa9cd",
+          "newLabelId": "lbl_8a95f3f2091acd5b",
+          "newSha256": "2ce221051ba180a604627d9a6960dcda2061c4b7aef014f43a2178d5a96e1a9b"
+        },
+        {
+          "qrId": "qr_a2e750c9a129",
+          "oldLabelId": "lbl_c605e1ad9d5acd79",
+          "newLabelId": "lbl_a3921d2cc607684b",
+          "newSha256": "27cd8f212559c8e8048095968250b96096e7b51f7cde590214bd3564d6d9cc9c"
+        },
+        {
+          "qrId": "qr_bd6ece96edd8",
+          "oldLabelId": "lbl_49b2acd405e0d9ee",
+          "newLabelId": "lbl_028a2560b0ee96ed",
+          "newSha256": "29b39aa9e8f3f2676dda0aa126b961ea18aa8cfec2ff13a7b77577971a52b83b"
+        },
+        {
+          "qrId": "qr_d02e81275aaa",
+          "oldLabelId": "lbl_21f789945ba497b9",
+          "newLabelId": "lbl_cf5d33f7662a19ce",
+          "newSha256": "bfbb18d4875056b245256ee9b8624a30561498fa05db89685c94823188d5ea4c"
+        }
+      ]
+    },
+    "ledger": {
+      "size": 78,
+      "lastHash": "620879cff8a562bd2242e6d28e370a9d78e238cf1c3ded46b4899962162c5354",
+      "dailyRoots": [
+        {
+          "date": "2026-07-04",
+          "count": 78,
+          "root": "fa7758f0f92069f288a499e0ac20f536cfeac2c08df80b3837f648410aa81bd6"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>OvenClear — /verify</title>
+<style>
+  :root {
+    --bg: #140D0A;
+    --bg-2: #1C130F;
+    --panel: #211610;
+    --panel-2: #2A1D15;
+    --border: #3B2A20;
+    --border-2: #4A3427;
+    --ink: #F4EAE2;
+    --muted: #B49C8E;
+    --muted-2: #8C7566;
+    --terracotta: #C2552B;
+    --amber: #F5B841;
+    --green: #5FBE82;
+    --green-ink: #9EE6B6;
+    --red: #E85B41;
+    --red-ink: #FCA48F;
+    --blue-ink: #8FB6D9;
+    --display: 'Fraunces', 'Iowan Old Style', 'Palatino Linotype', Georgia, 'Times New Roman', serif;
+    --body: 'Inter', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --mono: 'JetBrains Mono', 'SF Mono', ui-monospace, Menlo, Consolas, monospace;
+    --radius: 14px;
+    --shadow: 0 18px 44px -22px rgba(0,0,0,.8);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; }
+  body {
+    background:
+      radial-gradient(1100px 460px at 78% -6%, rgba(245,184,65,.10), transparent 60%),
+      radial-gradient(900px 420px at 8% 2%, rgba(194,85,43,.14), transparent 58%),
+      var(--bg);
+    color: var(--ink);
+    font-family: var(--body);
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: "kern" 1;
+  }
+  .wrap { max-width: 1120px; margin: 0 auto; padding: 30px 22px 72px; }
+  a { color: var(--amber); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  h1, h2, h3 { font-family: var(--display); font-weight: 600; letter-spacing: -.01em; margin: 0; }
+  .mono { font-family: var(--mono); }
+  .muted { color: var(--muted); }
+
+  /* ---- header ---- */
+  header.top { display: flex; flex-wrap: wrap; align-items: flex-start; gap: 18px 26px; justify-content: space-between; }
+  .brand { display: flex; align-items: center; gap: 12px; }
+  .brand .logo { font-size: 30px; line-height: 1; filter: drop-shadow(0 3px 8px rgba(0,0,0,.5)); }
+  .brand .name { font-family: var(--display); font-size: 30px; font-weight: 600; letter-spacing: -.02em; }
+  .brand .name b { color: var(--amber); font-weight: 600; }
+  .tagline { color: var(--ink); opacity: .92; font-size: 15px; max-width: 640px; margin-top: 8px; }
+  .badges { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .pill { display: inline-flex; align-items: center; gap: 7px; padding: 5px 11px; border-radius: 999px; font-size: 12px; font-weight: 600; border: 1px solid var(--border-2); background: var(--panel); color: var(--muted); }
+  .pill.cat { color: #d3b6f0; border-color: #4a3a5e; background: rgba(139,92,246,.10); }
+  .pill.live { color: var(--green-ink); border-color: rgba(95,190,130,.4); background: rgba(95,190,130,.10); }
+  .disclosure {
+    margin-top: 16px; padding: 12px 16px; border-radius: 12px;
+    border: 1px solid rgba(245,184,65,.34); background: rgba(245,184,65,.07);
+    color: #F0DCC3; font-size: 13px; display: flex; gap: 11px; align-items: flex-start;
+  }
+  .disclosure .tag { flex: 0 0 auto; font-family: var(--mono); font-size: 11px; font-weight: 700; letter-spacing: .06em; color: var(--bg); background: var(--amber); padding: 3px 8px; border-radius: 6px; margin-top: 1px; }
+
+  /* ---- section scaffolding ---- */
+  section { margin-top: 40px; }
+  .sec-head { display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; }
+  .sec-head .k { font-family: var(--mono); font-size: 12px; color: var(--terracotta); font-weight: 700; letter-spacing: .12em; }
+  .sec-head h2 { font-size: 23px; }
+  .sec-head .sub { color: var(--muted); font-size: 14px; }
+  .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+  @media (max-width: 820px) { .grid2 { grid-template-columns: 1fr; } }
+
+  .card { background: linear-gradient(180deg, var(--panel), var(--bg-2)); border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow); }
+  .card .pad { padding: 20px; }
+
+  /* ---- counters ---- */
+  .counters { display: grid; grid-template-columns: repeat(6, 1fr); gap: 12px; }
+  @media (max-width: 900px) { .counters { grid-template-columns: repeat(3, 1fr); } }
+  @media (max-width: 520px) { .counters { grid-template-columns: repeat(2, 1fr); } }
+  .stat { background: linear-gradient(180deg, var(--panel), var(--bg-2)); border: 1px solid var(--border); border-radius: 12px; padding: 15px 14px; }
+  .stat .n { font-family: var(--display); font-size: 30px; font-weight: 600; line-height: 1; color: var(--amber); }
+  .stat .n.good { color: var(--green-ink); }
+  .stat .l { font-size: 11.5px; color: var(--muted); margin-top: 8px; text-transform: uppercase; letter-spacing: .05em; }
+
+  /* ---- verdict cards ---- */
+  .verdict { position: relative; overflow: hidden; }
+  .verdict.cleared { border-color: rgba(95,190,130,.42); }
+  .verdict.refusal { border-color: rgba(232,91,65,.42); }
+  .verdict::before { content: ""; position: absolute; inset: 0 auto 0 0; width: 4px; }
+  .verdict.cleared::before { background: var(--green); }
+  .verdict.refusal::before { background: var(--red); }
+  .status { display: inline-flex; align-items: center; gap: 8px; font-family: var(--mono); font-weight: 700; font-size: 13px; letter-spacing: .06em; padding: 6px 12px; border-radius: 8px; }
+  .status.ok { color: #0d2617; background: var(--green); }
+  .status.no { color: #2a0d07; background: var(--red); }
+  .who { margin: 14px 0 4px; font-family: var(--display); font-size: 19px; }
+  .who .biz { color: var(--ink); }
+  .wholine { color: var(--muted); font-size: 13.5px; }
+  .quote { margin: 14px 0 6px; padding: 13px 15px; border-left: 3px solid var(--amber); background: rgba(245,184,65,.06); border-radius: 0 10px 10px 0; font-size: 14px; color: #F0E2D2; }
+  .quote .cite { display: block; margin-top: 8px; font-family: var(--mono); font-size: 11.5px; color: var(--amber); }
+  .beat { margin-top: 12px; font-family: var(--display); font-style: italic; font-size: 16px; color: var(--red-ink); }
+  .beat.good { color: var(--green-ink); }
+  .reasons { margin: 12px 0 0; padding: 0; list-style: none; font-size: 13px; color: var(--muted); }
+  .reasons li { padding: 4px 0 4px 18px; position: relative; }
+  .reasons li::before { content: "›"; position: absolute; left: 3px; color: var(--terracotta); }
+
+  /* ---- chips ---- */
+  .chip { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11.5px; padding: 4px 9px; border-radius: 7px; border: 1px solid var(--border-2); background: var(--panel-2); color: var(--muted); }
+  .chip b { color: var(--amber); font-weight: 600; }
+  .chip.hash b { color: #E7D3A6; }
+  .chip.snap { border-color: rgba(245,184,65,.3); }
+  .chiprow { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 14px; }
+  .signed { display: inline-flex; align-items: center; gap: 6px; font-family: var(--mono); font-size: 11px; color: var(--green-ink); }
+  .signed .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px rgba(95,190,130,.8); }
+
+  /* ---- label artifact ---- */
+  .label-wrap { display: grid; grid-template-columns: 1fr 190px; gap: 22px; align-items: start; }
+  @media (max-width: 720px) { .label-wrap { grid-template-columns: 1fr; } }
+  .label {
+    background: #FBF4E9; color: #241a12; border-radius: 10px; padding: 20px 22px;
+    font-family: var(--mono); font-size: 13px; line-height: 1.65; border: 1px solid #e6d6bf;
+    box-shadow: 0 20px 40px -24px rgba(0,0,0,.9);
+  }
+  .label .l-biz { font-weight: 700; font-size: 15px; }
+  .label .mandated { display: block; margin: 8px 0; padding: 7px 9px; background: #F5B84122; border: 1px dashed #C2552B; border-radius: 6px; font-weight: 700; color: #7a3417; }
+  .label .l-fix { color: #9a7f63; font-size: 11px; margin-top: 6px; }
+  .qr-card { text-align: center; }
+  .qr-card .qr { background: #fff; padding: 12px; border-radius: 12px; border: 1px solid var(--border-2); }
+  .qr-card .qr svg { display: block; width: 100%; height: auto; }
+  .qr-card .cap { font-size: 12px; color: var(--muted); margin-top: 10px; }
+  .btn { display: inline-block; margin-top: 12px; padding: 9px 15px; border-radius: 9px; font-size: 13px; font-weight: 600; background: var(--terracotta); color: #fff; border: 1px solid #d76a3f; }
+  .btn:hover { text-decoration: none; background: #d0602f; }
+
+  /* ---- diff / lawwatch ---- */
+  .snapflow { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; font-size: 13px; }
+  .snapflow .arrow { color: var(--terracotta); font-size: 20px; }
+  .statement-diff { margin-top: 8px; display: grid; gap: 10px; }
+  .sd { padding: 11px 14px; border-radius: 10px; font-family: var(--mono); font-size: 12.5px; }
+  .sd.before { background: rgba(232,91,65,.08); border: 1px solid rgba(232,91,65,.3); color: var(--red-ink); }
+  .sd.after { background: rgba(95,190,130,.08); border: 1px solid rgba(95,190,130,.3); color: var(--green-ink); }
+  .sd .k { font-family: var(--mono); font-size: 10.5px; letter-spacing: .1em; text-transform: uppercase; opacity: .8; display: block; margin-bottom: 4px; }
+  .sd ins, .sd del { text-decoration: none; padding: 1px 3px; border-radius: 3px; }
+  .sd ins { background: rgba(95,190,130,.28); }
+  .sd del { background: rgba(232,91,65,.28); }
+
+  table.deltas { width: 100%; border-collapse: collapse; font-size: 13px; }
+  table.deltas th, table.deltas td { text-align: left; padding: 9px 10px; border-bottom: 1px solid var(--border); vertical-align: top; }
+  table.deltas th { color: var(--muted-2); font-size: 11px; text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+  table.deltas td.sec { font-family: var(--mono); font-size: 12px; color: var(--ink); white-space: nowrap; }
+  .tag2 { display: inline-block; font-family: var(--mono); font-size: 10.5px; font-weight: 700; padding: 2px 7px; border-radius: 6px; letter-spacing: .03em; }
+  .tag2.material { background: rgba(245,184,65,.16); color: var(--amber); border: 1px solid rgba(245,184,65,.4); }
+  .tag2.cosmetic { background: rgba(140,117,102,.16); color: var(--muted); border: 1px solid var(--border-2); }
+  .tag2.immaterial { background: rgba(143,182,217,.12); color: var(--blue-ink); border: 1px solid rgba(143,182,217,.3); }
+  .tag2.scope { background: transparent; color: var(--muted); border: 1px solid var(--border-2); }
+
+  .fanout { display: grid; grid-template-columns: auto repeat(3, 1fr); gap: 12px; align-items: stretch; margin-top: 4px; }
+  @media (max-width: 640px) { .fanout { grid-template-columns: 1fr 1fr; } }
+  .fan { border: 1px solid var(--border); border-radius: 12px; padding: 14px; background: var(--bg-2); }
+  .fan .n { font-family: var(--display); font-size: 26px; line-height: 1; }
+  .fan .l { font-size: 11.5px; color: var(--muted); margin-top: 7px; }
+  .fan.affected .n { color: var(--ink); }
+  .fan.reissued .n { color: var(--green-ink); }
+  .fan.notified .n { color: var(--amber); }
+  .fan.none .n { color: var(--muted); }
+
+  ul.reissued-list { list-style: none; margin: 14px 0 0; padding: 0; display: grid; gap: 8px; }
+  ul.reissued-list li { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 9px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--bg-2); font-size: 13px; }
+  ul.reissued-list .biz { font-weight: 600; min-width: 140px; }
+  ul.reissued-list .arrow { color: var(--muted-2); font-family: var(--mono); font-size: 12px; }
+
+  .ledger-stream { max-height: 340px; overflow: auto; border: 1px solid var(--border); border-radius: 12px; background: var(--bg-2); }
+  .lrow { display: grid; grid-template-columns: 44px 130px 1fr auto; gap: 10px; align-items: center; padding: 8px 13px; border-bottom: 1px solid rgba(59,42,32,.6); font-size: 12.5px; }
+  .lrow:last-child { border-bottom: 0; }
+  .lrow .seq { font-family: var(--mono); color: var(--muted-2); }
+  .lrow .agent { font-family: var(--mono); color: var(--terracotta); font-size: 11.5px; }
+  .lrow .kind { color: var(--ink); }
+  .lrow .kind .d { color: var(--muted); font-size: 11.5px; }
+
+  /* ---- integrity / merkle ---- */
+  .merkle-hero { display: grid; grid-template-columns: 1.2fr 1fr; gap: 18px; }
+  @media (max-width: 820px) { .merkle-hero { grid-template-columns: 1fr; } }
+  .rootbox { padding: 18px; border-radius: 12px; border: 1px solid rgba(245,184,65,.32); background: rgba(245,184,65,.06); }
+  .rootbox .lbl { font-size: 11px; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  .rootbox .root { font-family: var(--mono); font-size: 16px; color: var(--amber); word-break: break-all; margin-top: 6px; font-weight: 600; }
+  .cmd { margin-top: 14px; font-family: var(--mono); font-size: 13px; background: #0d0806; border: 1px solid var(--border); border-radius: 9px; padding: 11px 13px; color: var(--green-ink); }
+  .cmd .p { color: var(--terracotta); }
+  .tamper { padding: 18px; border-radius: 12px; border: 1px solid rgba(95,190,130,.36); background: rgba(95,190,130,.06); }
+  .tamper .hd { display: flex; align-items: center; gap: 9px; }
+  .tamper .verdict-pill { font-family: var(--mono); font-size: 12px; font-weight: 700; color: #0d2617; background: var(--green); padding: 3px 9px; border-radius: 6px; }
+  .tamper p { font-size: 13px; color: var(--ink); margin: 12px 0 0; }
+  .tamper .seqbig { font-family: var(--display); color: var(--green-ink); font-size: 15px; }
+
+  footer.foot { margin-top: 48px; padding-top: 22px; border-top: 1px solid var(--border); color: var(--muted); font-size: 12.5px; display: grid; gap: 12px; }
+  footer.foot .cov { display: flex; flex-wrap: wrap; gap: 8px; }
+  .missing { padding: 40px; text-align: center; color: var(--muted); font-family: var(--mono); }
+</style>
+</head>
+<body>
+<div class="wrap" id="app">
+  <div class="missing">Loading /verify data… if this persists, run <b>npm&nbsp;run&nbsp;verify:dashboard</b> to regenerate <span class="mono">verify/data/verify-data.js</span>.</div>
+</div>
+
+<script src="data/verify-data.js"></script>
+<script>
+(function () {
+  "use strict";
+  var D = window.OVENCLEAR_VERIFY;
+  var app = document.getElementById("app");
+  if (!D) { return; }
+
+  function esc(s) {
+    return String(s == null ? "" : s)
+      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+      .replace(/"/g, "&quot;");
+  }
+  function shortHash(h, n) { n = n || 12; return h ? esc(h.slice(0, n)) + "…" : ""; }
+  function hashChip(label, h, cls) {
+    return '<span class="chip hash ' + (cls || "") + '" title="' + esc(h) + '">' + esc(label) +
+      ' <b>' + shortHash(h) + '</b></span>';
+  }
+  function cite(v, id) {
+    for (var i = 0; i < v.citations.length; i++) if (v.citations[i].id === id) return v.citations[i];
+    return v.citations[0];
+  }
+
+  var H = [];
+
+  /* ---------- header ---------- */
+  var m = D.meta;
+  H.push('<header class="top">');
+  H.push('<div>');
+  H.push('<div class="brand"><span class="logo">🥖✅</span><span class="name">Oven<b>Clear</b></span></div>');
+  H.push('<div class="tagline">' + esc(m.tagline) + '</div>');
+  H.push('<div class="badges">');
+  H.push('<span class="pill cat">' + esc(m.category) + '</span>');
+  H.push('<span class="pill live"><span style="width:7px;height:7px;border-radius:50%;background:var(--green);display:inline-block"></span> rendered from a real offline run</span>');
+  H.push('<span class="pill">no network · no API key</span>');
+  H.push('</div>');
+  H.push('</div>');
+  H.push('</header>');
+  H.push('<div class="disclosure"><span class="tag">FIXTURE</span><span>' + esc(m.disclosure) + '</span></div>');
+
+  /* ---------- counters ---------- */
+  var c = D.counters;
+  function stat(n, l, good) { return '<div class="stat"><div class="n' + (good ? " good" : "") + '">' + esc(n) + '</div><div class="l">' + esc(l) + '</div></div>'; }
+  H.push('<section id="panel-counters">');
+  H.push('<div class="sec-head"><span class="k">LIVE COUNTERS</span><h2>Sourced from the real ledger</h2><span class="sub">every number below is a count of signed ledger rows or a test result — nothing is typed in</span></div>');
+  H.push('<div class="counters">');
+  H.push(stat(c.verdictsIssued, "verdicts issued"));
+  H.push(stat(c.labelsReissued, "labels auto-re-issued", true));
+  H.push(stat(c.lawsWatched, "laws watched"));
+  H.push(stat(c.ledgerRows, "ledger rows signed"));
+  H.push(stat(c.tests, "tests green", true));
+  H.push(stat(c.goldenFlips + "/" + c.goldenCases, "golden verdict flips", true));
+  H.push('</div>');
+  H.push('</section>');
+
+  /* ---------- the magic moment: verdict + refusal ---------- */
+  var vc = D.verdicts.cleared, cust = D.verdicts.clearedCustomer;
+  var vr = D.verdicts.refusal, rcust = D.verdicts.refusalCustomer;
+  var elig = cite(vc, "GA-CF-3.1");
+  var refrig = cite(vr, "GA-CF-1.2");
+  H.push('<section>');
+  H.push('<div class="sec-head"><span class="k">THE VERDICT</span><h2>It clears what’s legal — and refuses what isn’t</h2><span class="sub">a decision table over pinned law, not a yes-machine</span></div>');
+  H.push('<div class="grid2">');
+
+  H.push('<div class="card verdict cleared" id="panel-cleared"><div class="pad">');
+  H.push('<span class="status ok">✓ CLEARED · ELIGIBLE</span>');
+  H.push('<div class="who"><span class="biz">' + esc(cust.businessName) + '</span></div>');
+  H.push('<div class="wholine">' + esc(cust.city) + ' · “' + esc(cust.product) + '” at a ' + esc(vc.venue).replace(/_/g, " ") + '</div>');
+  H.push('<div class="quote">“' + esc(elig.quote) + '”<span class="cite">' + esc(elig.id) + " · " + esc(elig.section) + ' · ' + esc(elig.source) + '</span></div>');
+  H.push('<div class="beat good">Statute-cited in milliseconds — for $19, not a $250 consult.</div>');
+  H.push('<div class="chiprow">');
+  H.push(hashChip("law snapshot", vc.snapshotHashes[0], "snap"));
+  H.push(hashChip("verdict", vc.verdictHash));
+  H.push('<span class="signed"><span class="dot"></span> pinned to law (I1)</span>');
+  H.push('</div>');
+  H.push('</div></div>');
+
+  H.push('<div class="card verdict refusal" id="panel-refusal"><div class="pad">');
+  H.push('<span class="status no">✕ REFUSED · NOT ALLOWED</span>');
+  H.push('<div class="who"><span class="biz">' + esc(rcust.businessName) + '</span></div>');
+  H.push('<div class="wholine">' + esc(rcust.city) + ' · “' + esc(rcust.product) + '” at a ' + esc(vr.venue).replace(/_/g, " ") + '</div>');
+  H.push('<div class="quote">“' + esc(refrig.quote) + '”<span class="cite">' + esc(refrig.id) + " · " + esc(refrig.section) + ' · ' + esc(refrig.source) + '</span></div>');
+  H.push('<div class="beat">It says no — and shows you why.</div>');
+  H.push('<div class="chiprow">');
+  H.push(hashChip("law snapshot", vr.snapshotHashes[0], "snap"));
+  H.push(hashChip("verdict", vr.verdictHash));
+  H.push('<span class="signed" style="color:var(--red-ink)"><span class="dot" style="background:var(--red);box-shadow:0 0 8px rgba(232,91,65,.8)"></span> no label issued (fails closed)</span>');
+  H.push('</div>');
+  H.push('</div></div>');
+
+  H.push('</div>');
+  H.push('</section>');
+
+  /* ---------- the physical artifact: label + QR ---------- */
+  var lab = D.label;
+  var mandated = (D.provenance[D.featured.labelQrId] || {}).mandatedSentence || "";
+  H.push('<section id="panel-label">');
+  H.push('<div class="sec-head"><span class="k">THE PHYSICAL ARTIFACT</span><h2>A print-ready label with a real, scannable QR</h2><span class="sub">the mandated sentence is byte-verbatim (QA gate I2) — nothing else in the field is something you can hold</span></div>');
+  H.push('<div class="card"><div class="pad"><div class="label-wrap">');
+  // label body
+  H.push('<div class="label">');
+  for (var li = 0; li < lab.lines.length; li++) {
+    var line = lab.lines[li];
+    if (line === mandated) { H.push('<span class="mandated">' + esc(line) + '</span>'); }
+    else if (li === 0) { H.push('<div class="l-biz">' + esc(line) + '</div>'); }
+    else if (/^\[FIXTURE/.test(line)) { H.push('<div class="l-fix">' + esc(line) + '</div>'); }
+    else { H.push('<div>' + esc(line) + '</div>'); }
+  }
+  H.push('</div>');
+  // qr
+  H.push('<div class="qr-card">');
+  H.push('<div class="qr">' + lab.qrSvg + '</div>');
+  H.push('<div class="cap">Scan → per-label provenance<br><span class="mono">' + esc(lab.qrId) + '</span></div>');
+  H.push('<a class="btn" href="label.html?qr=' + encodeURIComponent(D.featured.labelQrId) + '">View provenance →</a>');
+  H.push('</div>');
+  H.push('</div>');
+  H.push('<div class="chiprow">');
+  H.push(hashChip("label sha256", lab.sha256));
+  H.push(hashChip("law snapshot", lab.snapshotHashes[0], "snap"));
+  H.push('<span class="chip">pack <b>' + esc(lab.state) + "@" + esc(lab.packVersion) + '</b></span>');
+  H.push('<span class="signed"><span class="dot"></span> mandated sentence verbatim (I2)</span>');
+  H.push('</div>');
+  H.push('</div></div>');
+  H.push('</section>');
+
+  /* ---------- the law-watch replay ---------- */
+  var lw = D.lawwatch;
+  var labelDelta = null;
+  for (var di = 0; di < lw.deltas.length; di++) if (lw.deltas[di].scope === "label_text") labelDelta = lw.deltas[di];
+  H.push('<section id="panel-lawwatch">');
+  H.push('<div class="sec-head"><span class="k">THE “OH” MOMENT — LAW-WATCH</span><h2>The law moved. Nobody panicked.</h2><span class="sub">a labeled historical Texas amendment, replayed · no human in the loop</span></div>');
+  H.push('<div class="card"><div class="pad">');
+
+  // snapshot flow
+  H.push('<div class="snapflow">');
+  H.push('<span class="chip">TX ' + esc(lw.fromSnapshot.fetchedAt.slice(0, 10)) + ' ' + hashChip("", lw.fromSnapshot.contentSha256).replace(/^<span/, "<span style=\"border:0;padding:0;background:transparent\"") + '</span>');
+  H.push('<span class="arrow">→</span>');
+  H.push('<span class="chip">TX ' + esc(lw.toSnapshot.fetchedAt.slice(0, 10)) + ' ' + hashChip("", lw.toSnapshot.contentSha256).replace(/^<span/, "<span style=\"border:0;padding:0;background:transparent\"") + '</span>');
+  H.push('<span class="muted" style="font-size:13px">' + esc(lw.summary) + '</span>');
+  H.push('</div>');
+
+  // the mandated-statement diff
+  if (labelDelta) {
+    H.push('<div class="statement-diff">');
+    H.push('<div class="sd before"><span class="k">before — the sentence every TX label carried</span>' + esc(labelDelta.before) + '</div>');
+    H.push('<div class="sd after"><span class="k">after — what the amendment now requires</span>' + diffAfter(labelDelta.before, labelDelta.after) + '</div>');
+    H.push('</div>');
+  }
+
+  // deltas table
+  H.push('<div style="overflow-x:auto;margin-top:16px"><table class="deltas">');
+  H.push('<thead><tr><th>Section</th><th>Materiality</th><th>Scope</th><th>Why</th></tr></thead><tbody>');
+  for (var k = 0; k < lw.deltas.length; k++) {
+    var d = lw.deltas[k];
+    H.push('<tr><td class="sec">' + esc(d.section) + '</td>' +
+      '<td><span class="tag2 ' + esc(d.classification) + '">' + esc(d.classification) + '</span></td>' +
+      '<td><span class="tag2 scope">' + esc(d.scope) + '</span></td>' +
+      '<td class="muted">' + esc(d.rationale) + '</td></tr>');
+  }
+  H.push('</tbody></table></div>');
+
+  // fan-out
+  var ex = lw.execution;
+  H.push('<div class="fanout" style="margin-top:18px">');
+  H.push('<div class="fan affected"><div class="n">' + esc(ex.affectedTotal) + '</div><div class="l">customers holding a TX label</div></div>');
+  H.push('<div class="fan reissued"><div class="n">' + esc(ex.reissued) + '</div><div class="l">labels auto-re-issued (subscribers)</div></div>');
+  H.push('<div class="fan notified"><div class="n">' + esc(ex.notified) + '</div><div class="l">non-subscribers notified</div></div>');
+  H.push('<div class="fan none"><div class="n">' + esc(ex.noneAffectedLogged) + '</div><div class="l">material change, none affected — logged (I3)</div></div>');
+  H.push('</div>');
+
+  // reissued list
+  H.push('<ul class="reissued-list">');
+  for (var r = 0; r < lw.reissued.length; r++) {
+    var ri = lw.reissued[r];
+    H.push('<li><span class="biz">' + esc(ri.businessName) + '</span>' +
+      '<span class="arrow">' + shortHash(ri.oldLabelId, 10).replace("…", "") + ' → ' + esc(ri.newLabelId) + '</span>' +
+      hashChip("sha256", ri.newSha256) +
+      '<span class="signed"><span class="dot"></span> re-issued · QA re-passed</span></li>');
+  }
+  H.push('</ul>');
+
+  // the signed ledger stream
+  H.push('<div class="sec-head" style="margin-top:22px;margin-bottom:10px"><span class="k">SIGNED LEDGER</span><h2 style="font-size:17px">Every step above, on the chain</h2></div>');
+  H.push('<div class="ledger-stream">');
+  var streamed = D.ledger.rows.filter(function (x) { return x.lawwatch; });
+  for (var s = 0; s < streamed.length; s++) {
+    var row = streamed[s];
+    H.push('<div class="lrow"><span class="seq">#' + esc(row.seq) + '</span>' +
+      '<span class="agent">' + esc(row.agent) + '</span>' +
+      '<span class="kind">' + esc(row.kind) + (row.detail ? ' <span class="d">— ' + esc(row.detail) + '</span>' : "") + '</span>' +
+      '<span class="signed"><span class="dot"></span> signed</span></div>');
+  }
+  H.push('</div>');
+
+  H.push('</div></div>');
+  H.push('</section>');
+
+  /* ---------- integrity / merkle ---------- */
+  var L = D.ledger;
+  H.push('<section id="panel-merkle">');
+  H.push('<div class="sec-head"><span class="k">PROVENANCE INTEGRITY</span><h2>Verify it yourself</h2><span class="sub">a downloaded export is only trustworthy because anyone can re-derive it from scratch</span></div>');
+  H.push('<div class="card"><div class="pad"><div class="merkle-hero">');
+
+  H.push('<div>');
+  H.push('<div class="rootbox"><div class="lbl">daily Merkle root · ' + esc(L.merkleDate) + ' · ' + esc(L.length) + ' rows · ' + esc(L.signaturesChecked) + ' Ed25519 signatures</div><div class="root">' + esc(L.merkleRoot) + '</div></div>');
+  H.push('<div class="cmd"><span class="p">$</span> ' + esc(L.verifyCommand) + '  <span class="muted"># recompute chain + every signature + Merkle root</span></div>');
+  H.push('<div class="chiprow">');
+  H.push(hashChip("last hash", L.lastHash));
+  H.push('<span class="chip">agents <b>' + esc(L.agents.length) + '</b></span>');
+  H.push('<a class="chip" href="data/ledger.jsonl" style="color:var(--amber)">⬇ ledger.jsonl</a>');
+  H.push('</div>');
+  H.push('</div>');
+
+  var t = L.tamper;
+  H.push('<div class="tamper">');
+  H.push('<div class="hd"><span class="verdict-pill">REJECTED</span><strong>Tamper caught &amp; localized</strong></div>');
+  H.push('<p>Inject one byte into row <span class="seqbig">#' + esc(t.victimSeq) + '</span>’s payload and re-run the verifier: it localizes the mutation to <span class="seqbig">seq ' + esc(t.firstBadSeq) + '</span> and rejects the whole export.</p>');
+  H.push('<p class="muted mono" style="font-size:11.5px">' + esc(t.reason) + '</p>');
+  H.push('<p class="muted" style="font-size:12px">The clean export re-derives exactly; a single changed byte cannot hide.</p>');
+  H.push('</div>');
+
+  H.push('</div></div></div>');
+  H.push('</section>');
+
+  /* ---------- footer ---------- */
+  H.push('<footer class="foot">');
+  H.push('<div class="cov"><span class="pill">Coverage: <b style="color:var(--amber)">GA + TX deep</b></span><span class="pill">CA + FL stubbed (badged)</span><span class="pill">' + esc(c.statesDeep) + ' deep + ' + esc(c.statesStub) + ' stub</span><span class="pill">2 audits + a hackathon postmortem</span></div>');
+  H.push('<div>' + esc(m.disclosure) + '</div>');
+  H.push('<div class="muted">Generated by <span class="mono">' + esc(m.generator) + '</span> · fixture clock starts <span class="mono">' + esc(m.fixtureClockStart) + '</span> · nothing here is legal advice.</div>');
+  H.push('</footer>');
+
+  app.innerHTML = H.join("");
+
+  /* tiny inline highlighter: show the exact inserted phrase in the "after" statement */
+  function diffAfter(before, after) {
+    if (!before || !after) return esc(after);
+    // find common prefix + suffix, wrap the middle insertion in <ins>
+    var a = before, b = after, p = 0, sa = a.length, sb = b.length;
+    while (p < sa && p < sb && a[p] === b[p]) p++;
+    while (sa > p && sb > p && a[sa - 1] === b[sb - 1]) { sa--; sb--; }
+    return esc(b.slice(0, p)) + '<ins>' + esc(b.slice(p, sb)) + '</ins>' + esc(b.slice(sb));
+  }
+})();
+</script>
+</body>
+</html>

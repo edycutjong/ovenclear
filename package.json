@@ -1,0 +1,42 @@
+{
+  "name": "@ovenclear/core",
+  "version": "0.1.0",
+  "private": true,
+  "description": "OvenClear offline-testable core: rulekit engine, snapshot store, label engine + QA gate, law-watch loop, signed decision ledger, policy envelope. All rule data is FIXTURE/SYNTHETIC.",
+  "type": "module",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18.17"
+  },
+  "bin": {
+    "rulekit": "./src/cli.ts"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc --noEmit",
+    "seed": "tsx scripts/seed.ts",
+    "seed:check": "tsx scripts/seed.ts --check",
+    "self-test": "tsx scripts/self_test.ts",
+    "bench": "tsx scripts/bench.ts",
+    "verify-ledger": "tsx scripts/verify_ledger.ts",
+    "rulekit": "tsx src/cli.ts",
+    "verify:dashboard": "tsx scripts/export_verify_data.ts",
+    "evidence": "tsx scripts/capture_evidence.ts",
+    "proof": "npm run seed:check && npm run self-test && npm run verify-ledger && npm run bench",
+    "audit": "npm audit --audit-level=high",
+    "ci": "npm run typecheck && npm run test && npm run proof"
+  },
+  "dependencies": {
+    "@google/genai": "^1.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.0",
+    "@types/qrcode": "^1.5.6",
+    "playwright": "^1.61.1",
+    "qrcode": "^1.5.4",
+    "tsx": "^4.19.0",
+    "typescript": "^5.6.0",
+    "vitest": "^3.0.0"
+  }
+}

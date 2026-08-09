@@ -1,0 +1,32 @@
+# Dependencies
+node_modules/
+
+# Build output / TS incremental
+dist/
+*.tsbuildinfo
+
+# Regenerable fixture dumps (golden baseline `scripts/seed.baseline.json` IS committed).
+# Anchored to root so the COMMITTED judge-visible dashboard data (verify/data/) is NOT ignored.
+/data/
+
+# Environment (the only real secret is GEMINI_API_KEY; the offline core never needs it)
+.env
+.env.*
+!.env.example
+
+# Test / coverage artifacts
+coverage/
+.vitest/
+*.lcov
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS / editor cruft
+.DS_Store
+.idea/
+.vscode/
+*.swp

@@ -1,0 +1,89 @@
+name: CI
+
+# OvenClear core is an offline, deterministic TypeScript library (Node 18+,
+# vitest). This pipeline mirrors what a judge runs locally: typecheck + tests,
+# then the offline PROOF stage (deterministic seed re-hash, end-to-end self-test,
+# ledger tamper-rejection, benchmark), then a security gate. There is no UI, so
+# the Playwright / Lighthouse / bundle stages of the standard template are N/A.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # ── Stage 1: Quality (typecheck + 128 vitest tests) ──────────────────────
+  quality:
+    name: "Stage 1 · Quality"
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        node-version: ${{ github.event_name == 'push' && fromJSON('[20, 22]') || fromJSON('[20]') }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js ${{ matrix.node-version }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Type check (tsc --noEmit, strict)
+        run: npm run typecheck
+      - name: Unit + golden tests (vitest run)
+        run: npm test
+
+  # ── Stage 2: Proof (offline determinism + provenance integrity) ──────────
+  proof:
+    name: "Stage 2 · Offline Proof"
+    needs: [quality]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: Deterministic fixture re-hash (seed --check)
+        run: npm run seed:check
+      - name: End-to-end self-test (interview → verdict → label + QA → re-issue)
+        run: npm run self-test
+      - name: Ledger tamper-rejection (verify_ledger)
+        run: npm run verify-ledger
+      - name: Verdict benchmark + zero golden-flip gate
+        run: npm run bench
+
+  # ── Stage 3: Security (secret scan + dependency audit) ───────────────────
+  security:
+    name: "Stage 3 · Security"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # full history for the secret scanner
+      - name: TruffleHog secret scan
+        uses: trufflesecurity/trufflehog@main
+        with:
+          extra_args: --only-verified
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "npm"
+      - name: Install dependencies
+        run: npm ci
+      - name: npm audit (high + critical)
+        run: npm audit --audit-level=high
+        continue-on-error: true # advisory: never block on a transitive upstream advisory
