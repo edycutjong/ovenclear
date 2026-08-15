@@ -6,5 +6,7 @@ export default defineConfig({
     environment: 'node',
     // Tests must run fully offline and deterministically.
     testTimeout: 20_000,
+    // The storefront's structured production log is evidence, not test output.
+    env: { OVENCLEAR_QUIET: '1' },
   },
 });
