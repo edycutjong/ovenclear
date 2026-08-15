@@ -1,5 +1,5 @@
 import { GENESIS_HASH, canonicalJson, sha256Hex } from '../util/canonical';
-import type { AgentKeyring } from '../util/keys';
+import { verifyHex, type AgentKeyring } from '../util/keys';
 
 /**
  * Decision ledger — append-only, hash-chained, per-agent Ed25519-signed
@@ -108,5 +108,47 @@ export class DecisionLedger {
       .map((l) => l.trim())
       .filter(Boolean)
       .map((l) => JSON.parse(l) as LedgerEntry);
+  }
+
+  /**
+   * Rehydrate a ledger from a previously exported chain so a long-running
+   * server can restart without breaking linkage (the in-memory `entries`
+   * array is what `append` chains from).
+   *
+   * The chain is re-verified on the way in — hash linkage, seq contiguity and
+   * every Ed25519 signature — and restore FAILS CLOSED on the first bad row
+   * rather than silently continuing a corrupted chain. This is the same
+   * check `verifyChain` performs; it is duplicated here (rather than
+   * imported) only to keep ledger.ts free of a cycle with verify.ts.
+   */
+  static restore(
+    entries: readonly LedgerEntry[],
+    keyring: AgentKeyring,
+    clock?: LedgerClock,
+  ): DecisionLedger {
+    let prevHash = GENESIS_HASH;
+    for (let i = 0; i < entries.length; i++) {
+      const e = entries[i]!;
+      if (e.seq !== i) {
+        throw new Error(`ledger restore: seq mismatch at row ${i} (row says ${e.seq})`);
+      }
+      if (e.prevHash !== prevHash) {
+        throw new Error(`ledger restore: prevHash mismatch at seq ${i}`);
+      }
+      const recomputed = computeEntryHash(
+        { seq: e.seq, ts: e.ts, agent: e.agent, kind: e.kind, payload: e.payload },
+        e.prevHash,
+      );
+      if (recomputed !== e.entryHash) {
+        throw new Error(`ledger restore: entryHash does not recompute at seq ${i} (tampered)`);
+      }
+      if (!verifyHex(e.publicKey, e.entryHash, e.signature)) {
+        throw new Error(`ledger restore: ed25519 signature invalid at seq ${i}`);
+      }
+      prevHash = e.entryHash;
+    }
+    const ledger = new DecisionLedger(keyring, clock);
+    ledger.entries.push(...entries);
+    return ledger;
   }
 }
