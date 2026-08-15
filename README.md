@@ -4,9 +4,9 @@
 
 **Cottage-food compliance verdicts + auto-reissued labels, kept true as the law changes.**
 
-![Tests](https://img.shields.io/badge/tests-128%20passing-22C55E?style=for-the-badge)
+![Tests](https://img.shields.io/badge/tests-149%20passing-22C55E?style=for-the-badge)
 ![Golden](https://img.shields.io/badge/golden%20verdicts-0%20flips%2F28-22C55E?style=for-the-badge)
-![Offline](https://img.shields.io/badge/runs-offline%20·%20no%20API%20key-C2552B?style=for-the-badge)
+![Core](https://img.shields.io/badge/core-offline%20·%20no%20API%20key-C2552B?style=for-the-badge)
 
 ![TypeScript](https://img.shields.io/badge/TypeScript-strict-3178C6?style=flat&logo=typescript&logoColor=white)
 ![Node](https://img.shields.io/badge/Node-%E2%89%A518.17-339933?style=flat&logo=node.js&logoColor=white)
@@ -21,7 +21,7 @@
 
 **The problem** — every US state writes a different cottage-food law (eligible foods, venues, licenses, and the *exact sentence* that must appear on the label), and a home baker either guesses, gives up, or pays a $250 consult that costs more than her first month's profit — and when the law *changes*, nobody tells her the label she's printing is now non-compliant.
 **The solution** — a $19 statute-cited "can I sell this?" verdict + a print-ready compliant label, and a $5/mo Law-Watch that **re-issues the label automatically** when the law moves — every decision on a signed, tamper-evident ledger.
-**What's built here** — the deterministic, **fully-offline core** of all of it: the rulekit verdict engine (GA/TX deep + CA/FL stubs), a hash-pinned snapshot store, the label composer + byte-verbatim QA gate, the law-watch `diff → materiality → impact → re-issue` loop, a signed hash-chained Ed25519 ledger, and the policy envelope — **128 tests, all green, no network, no API key.**
+**What's built here** — two layers. The deterministic, **fully-offline core**: the rulekit verdict engine (GA/TX deep + CA/FL stubs), a hash-pinned snapshot store, the label composer + byte-verbatim QA gate, the law-watch `diff → materiality → impact → re-issue` loop, a signed hash-chained Ed25519 ledger, and the policy envelope. And the **storefront that sells it** ([`server/`](./server/)): landing page, free verdict, Stripe Checkout, webhook fulfillment, label delivery, and a public per-label provenance page — running on that same core, with no second copy of the decision logic. **149 tests, all green; the core needs no network and no API key.**
 
 > All rule text is **FIXTURE / synthetic** — statute-*shaped* data modeled on real cottage-food programs, never verbatim law. Every citation quote is a verbatim substring of its pinned snapshot, enforced at rulepack registration. What is real versus deferred is stated honestly, module by module, below; reproduce every claim with [`DEMO.md`](./DEMO.md).
 
@@ -126,9 +126,42 @@ Each subcommand is a thin wrapper over the exact core the tests exercise — no 
 
 ---
 
+## 🛒 The storefront — the same core, taking money
+
+[`server/`](./server/) is the deployed business: a landing page, the free verdict, Stripe Checkout,
+webhook fulfillment, label delivery, and a public per-label provenance page. It calls
+`engine.check()` and `issueLabel()` directly — there is **no second copy of the decision logic**,
+which is why the offline golden suite is also a regression suite for the live product.
+
+```bash
+npm run serve      # http://localhost:8080 — works with no Stripe key and no Gemini key
+```
+
+Three design decisions worth reading the code for:
+
+- **A prohibited verdict never reaches checkout.** The verdict is computed *before* payment and
+  re-computed server-side at checkout, so a hidden-field edit cannot talk it into selling a label
+  for a food the state disallows. If a prohibited order is somehow paid, fulfillment refuses the
+  label and flags a refund rather than keeping the money —
+  [`server/fulfill.ts`](./server/fulfill.ts).
+- **Gemini may widen recall, never change a decision.** The deterministic catalog runs first; only
+  on a miss does Gemini get a turn, constrained to an enum of the catalog itself, and its answer is
+  re-checked by the same normalizer before any rule runs. The model can rescue *"my tangy no-knead
+  boule"* into `sourdough bread`. It cannot invent a product, move it between categories, or turn a
+  refusal into a sale — [`server/product-resolver.ts`](./server/product-resolver.ts).
+- **The QA gate still fails closed, after payment.** A label that cannot prove its mandated
+  sentences are byte-verbatim does not ship, paid or not.
+
+The signed ledger is public at `/ledger.jsonl` and verifiable with `npm run verify-ledger`.
+Deployment is [`DEPLOY.md`](./DEPLOY.md) — Cloud Run, GCS-mounted ledger, Secret Manager.
+
+> **Live instance:** `[LIVE-FILL: Cloud Run URL once deployed]`
+
+---
+
 ## Test count
 
-**128 tests across 9 files**, all green. Confirm with `npm test`:
+**149 tests across 10 files**, all green. Confirm with `npm test`:
 
 | File | Tests | Covers |
 |---|---:|---|
