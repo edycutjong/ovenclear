@@ -30,3 +30,6 @@ yarn-error.log*
 .idea/
 .vscode/
 *.swp
+
+# graphify knowledge graph (kitchen — never judge-facing)
+graphify-out/
