@@ -1,0 +1,1455 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>OvenClear — a $250 lawyer question, answered for $19, kept true when the law moves</title>
+<meta name="description" content="Statute-cited cottage-food verdicts, print-ready compliant labels, and automatic re-issue when the law changes — every decision on a public, signed, tamper-evident ledger. Built for XPRIZE Category 2, Entrepreneurship &amp; Job Creation.">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23140D0A'/%3E%3Crect x='14' y='16' width='36' height='32' rx='7' fill='none' stroke='%23C2552B' stroke-width='4'/%3E%3Ccircle cx='22' cy='24' r='3' fill='%23F5B841'/%3E%3Cpath d='M22 40l7 7 15-14' fill='none' stroke='%23F5B841' stroke-width='5' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<style>
+/* ============================================================
+   OVENCLEAR landing — single file, zero external requests.
+   Palette + motifs per assets/_tokens.css and assets/DESIGN-SPEC.md.
+   ============================================================ */
+:root {
+  /* brand */
+  --primary: #C2552B;            /* terracotta */
+  --primary-bright: #E0703F;     /* terracotta lifted for small text on dark */
+  --accent: #F5B841;             /* oven amber */
+  --paper: #FBF6EF;              /* label paper — constant across themes */
+  --paper-ink: #140D0A;
+
+  /* surfaces (dark is primary) */
+  --bg: #140D0A;
+  --bg-raised: #1D1310;
+  --bg-inset: #0E0907;
+  --card: rgba(255, 245, 230, 0.035);
+  --card-strong: rgba(255, 245, 230, 0.06);
+
+  /* text */
+  --text-hi: #FBF6EF;
+  --text-mid: #BEAFA1;
+  --text-low: #8A7A6B;
+
+  /* borders */
+  --line-subtle: rgba(255, 245, 230, 0.09);
+  --line: rgba(255, 245, 230, 0.16);
+
+  /* status */
+  --ok: #22C55E;
+  --ok-soft: rgba(34, 197, 94, 0.14);
+  --bad: #E4593B;
+  --bad-soft: rgba(228, 89, 59, 0.14);
+
+  /* accent inks (flip in light mode for contrast) */
+  --ink-accent: var(--accent);          /* small mono labels */
+  --ink-primary: var(--primary-bright); /* small terracotta text */
+
+  /* effects */
+  --mesh:
+    radial-gradient(ellipse 72% 58% at 12% -4%, rgba(194, 85, 43, 0.28), transparent 62%),
+    radial-gradient(ellipse 52% 42% at 94% 4%, rgba(245, 184, 65, 0.13), transparent 60%);
+  --shadow-sm: 0 1px 2px rgba(0,0,0,.3);
+  --shadow-md: 0 4px 14px rgba(0,0,0,.4);
+  --shadow-lg: 0 18px 50px rgba(0,0,0,.5);
+  --glow-primary: 0 0 40px rgba(194, 85, 43, 0.35);
+  --paper-edge: 0 0 0 0 transparent;
+  --grad-hero: linear-gradient(135deg, var(--primary) 0%, var(--accent) 100%);
+
+  /* type */
+  --serif: "Iowan Old Style", "Palatino Linotype", Palatino, Georgia, ui-serif, serif;
+  --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --mono: ui-monospace, "SF Mono", SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+
+  /* spacing scale */
+  --s1: 4px; --s2: 8px; --s3: 12px; --s4: 16px; --s5: 24px; --s6: 32px;
+  --s7: 48px; --s8: 64px; --s9: 96px; --s10: 128px;
+
+  /* motion — ONE curve family, four speeds. Nothing in this file invents its own. */
+  --ease-out: cubic-bezier(.2, .7, .2, 1);   /* decelerating: lifts, reveals, underlines */
+  --ease-in-out: cubic-bezier(.4, 0, .2, 1); /* symmetric: colour + border tints */
+  --dur-tint: 150ms;   /* colour / border only — no geometry */
+  --dur-hover: 200ms;  /* small lifts, 2px */
+  --dur-lift: 300ms;   /* large lifts, 3–4px, and the artifact tilt */
+  --dur-reveal: 620ms; /* scroll reveal */
+
+  --r-sm: 8px; --r-md: 14px; --r-lg: 20px; --r-pill: 999px;
+  --w: 1120px;
+  --head-h: 62px;
+  /* the paper label is theme-constant, so its inks are too. Stamp green is deepened
+     from the UI --ok so 13px bold type clears contrast on cream (was 2.7:1). */
+  --stamp-ink: #15803D;
+  color-scheme: dark;
+}
+@media (prefers-color-scheme: light) {
+  :root {
+    --bg: #FFFBF5;
+    --bg-raised: #FFF7EC;
+    --bg-inset: #F6EDE1;
+    --card: rgba(20, 13, 10, 0.035);
+    --card-strong: rgba(20, 13, 10, 0.06);
+    --text-hi: #201510;
+    --text-mid: #6E5F53;
+    /* was #8B7A6C = 4.0:1 on cream — fails AA at the 11–12px sizes this token is used at */
+    --text-low: #7A6A5D;
+    --line-subtle: rgba(20, 13, 10, 0.10);
+    --line: rgba(20, 13, 10, 0.17);
+    --ink-accent: #8F5B06;
+    --ink-primary: #B24A22;
+    --ok: #15773A;
+    --ok-soft: rgba(23, 138, 68, 0.12);
+    --bad: #C2431F;
+    --bad-soft: rgba(194, 67, 31, 0.10);
+    --mesh:
+      radial-gradient(ellipse 72% 58% at 12% -4%, rgba(194, 85, 43, 0.12), transparent 62%),
+      radial-gradient(ellipse 52% 42% at 94% 4%, rgba(245, 184, 65, 0.14), transparent 60%);
+    --shadow-sm: 0 1px 2px rgba(60, 35, 20, .08);
+    --shadow-md: 0 4px 14px rgba(60, 35, 20, .10);
+    --shadow-lg: 0 18px 50px rgba(60, 35, 20, .14);
+    --glow-primary: 0 0 40px rgba(194, 85, 43, 0.12);
+    /* the paper label must separate from a cream page */
+    --paper-edge: inset 0 0 0 1px rgba(20, 13, 10, .13);
+    color-scheme: light;
+  }
+}
+
+/* reset-ish */
+* { box-sizing: border-box; margin: 0; }
+html {
+  scroll-behavior: smooth;
+  /* optical alignment: quotes and dashes hang into the margin where the engine supports it */
+  hanging-punctuation: first last;
+}
+body {
+  background: var(--bg);
+  color: var(--text-hi);
+  font-family: var(--sans);
+  font-size: 16.5px;
+  line-height: 1.65;
+  -webkit-font-smoothing: antialiased;
+  font-kerning: normal;
+  overflow-x: hidden;
+}
+/* `clip` beats `hidden`: it suppresses sideways overflow WITHOUT making <body> a scroll
+   container, which is what keeps position:sticky on the header reliable. */
+@supports (overflow-x: clip) { body { overflow-x: clip; } }
+img { max-width: 100%; height: auto; display: block; }
+a { color: var(--ink-accent); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 3px; text-decoration-thickness: 1px; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; border-radius: 3px; }
+::selection { background: rgba(245, 184, 65, .28); color: var(--text-hi); }
+
+h1, h2, h3 { font-family: var(--serif); font-weight: 600; line-height: 1.14; text-wrap: balance; }
+/* optical tracking: the larger the type, the tighter it wants to be set */
+h1 { letter-spacing: -0.024em; }
+h2 { font-size: clamp(1.75rem, 3.4vw, 2.5rem); letter-spacing: -0.017em; }
+h3 { font-size: 1.22rem; line-height: 1.3; letter-spacing: -0.008em; }
+p, li { overflow-wrap: break-word; }
+/* kill single-word last lines in body copy where the engine supports it */
+:where(p, li, figcaption, blockquote, .lede, .sec-sub) { text-wrap: pretty; }
+p { max-width: 68ch; }
+strong { color: var(--text-hi); font-weight: 600; }
+/* hashes are read character-by-character: never let the mono face ligate or proportion them */
+code, .mono { font-family: var(--mono); font-variant-ligatures: none; }
+:where(p, li, figcaption, blockquote) .mono { font-size: .9em; letter-spacing: -.01em; }
+/* the serif faces default to old-style figures — force lining, tabular numerals on
+   anything that is a NUMBER doing work (stat wall, price ladder, the hero $19). */
+.stat .n, .consult-row .amt { font-variant-numeric: lining-nums tabular-nums; }
+.hero h1, .quoteblock blockquote { font-variant-numeric: lining-nums proportional-nums; }
+[id] { scroll-margin-top: calc(var(--head-h) + 18px); }
+
+/* overflow wells get a thin, in-palette scrollbar instead of the OS default slab */
+.ledger-strip, .proof-table-wrap, .scroll-frame, .cmdblock pre {
+  scrollbar-width: thin; scrollbar-color: var(--line) transparent;
+}
+.ledger-strip::-webkit-scrollbar, .proof-table-wrap::-webkit-scrollbar,
+.scroll-frame::-webkit-scrollbar, .cmdblock pre::-webkit-scrollbar { width: 9px; height: 9px; }
+.ledger-strip::-webkit-scrollbar-thumb, .proof-table-wrap::-webkit-scrollbar-thumb,
+.scroll-frame::-webkit-scrollbar-thumb, .cmdblock pre::-webkit-scrollbar-thumb {
+  background: var(--line); border-radius: var(--r-pill); border: 2px solid transparent; background-clip: padding-box;
+}
+.ledger-strip::-webkit-scrollbar-track, .proof-table-wrap::-webkit-scrollbar-track,
+.scroll-frame::-webkit-scrollbar-track, .cmdblock pre::-webkit-scrollbar-track { background: transparent; }
+
+.skip {
+  position: absolute; left: -9999px; top: 0; z-index: 300;
+  background: var(--accent); color: #140D0A; padding: 10px 18px; border-radius: 0 0 10px 0;
+  font-weight: 600;
+}
+.skip:focus { left: 0; }
+
+.wrap { max-width: var(--w); margin: 0 auto; padding: 0 clamp(18px, 4vw, 36px); }
+
+/* ── header ─────────────────────────────────────────────── */
+.site {
+  position: sticky; top: 0; z-index: 100;
+  background: color-mix(in srgb, var(--bg) 82%, transparent);
+  backdrop-filter: blur(14px) saturate(1.3);
+  -webkit-backdrop-filter: blur(14px) saturate(1.3);
+  border-bottom: 1px solid var(--line-subtle);
+  transition: box-shadow var(--dur-lift) var(--ease-out);
+}
+.site.scrolled { box-shadow: var(--shadow-md); }
+.site-inner {
+  display: flex; align-items: center; gap: var(--s5);
+  padding: 13px clamp(18px, 4vw, 36px);
+  max-width: var(--w); margin: 0 auto;
+}
+.brand { display: flex; align-items: center; gap: 10px; color: var(--text-hi); font-family: var(--serif); font-size: 1.22rem; font-weight: 700; letter-spacing: -0.014em; transition: color var(--dur-tint) var(--ease-in-out); }
+.brand:hover, .brand:focus-visible { text-decoration: none; color: var(--ink-accent); }
+.brand svg { display: block; flex: none; }
+.site nav { display: flex; gap: clamp(10px, 2vw, 24px); margin-left: auto; flex-wrap: wrap; }
+.site nav a {
+  color: var(--text-mid); font-size: .92rem; position: relative; padding: 4px 2px;
+  transition: color var(--dur-tint) var(--ease-in-out);
+}
+/* scaleX, not an animated `right` — it composites, and it wipes from the left cleanly */
+.site nav a::after {
+  content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 2px;
+  background: var(--grad-hero); border-radius: 2px;
+  transform: scaleX(0); transform-origin: left center;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+.site nav a:hover { color: var(--text-hi); text-decoration: none; }
+.site nav a:hover::after,
+.site nav a:focus-visible::after,
+.site nav a.active::after { transform: scaleX(1); }
+.site nav a.active { color: var(--text-hi); }
+.fixture-flag {
+  margin-left: var(--s4);
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .04em;
+  color: var(--ink-accent); border: 1px solid var(--line); border-radius: var(--r-pill);
+  padding: 5px 12px; white-space: nowrap;
+  transition: border-color var(--dur-tint) var(--ease-in-out), background var(--dur-tint) var(--ease-in-out);
+}
+.fixture-flag:hover,
+.fixture-flag:focus-visible { text-decoration: none; border-color: var(--accent); background: var(--card-strong); }
+@media (max-width: 900px) { .site nav { display: none; } .fixture-flag { margin-left: auto; } }
+@media (max-width: 380px) { .fixture-flag { font-size: .66rem; padding: 4px 9px; } .brand { font-size: 1.08rem; } }
+/* below ~344px the wordmark and the fixture flag cannot both fit — the disclosure wins */
+@media (max-width: 344px) { .site .brand .wm { display: none; } .site-inner { gap: 10px; } }
+
+/* ── chips (the spine motif) ────────────────────────────── */
+.chip {
+  display: inline-flex; align-items: center; gap: 7px;
+  font-family: var(--mono); font-size: .76rem; line-height: 1.35;
+  padding: 6px 12px; border-radius: var(--r-pill);
+  border: 1px solid var(--line); background: var(--card);
+  color: var(--text-mid); white-space: nowrap; max-width: 100%;
+}
+.chip b { font-weight: 600; color: var(--ink-accent); }
+.chip .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--ok); box-shadow: 0 0 8px rgba(34,197,94,.5); flex: none; }
+.chip.bad .dot { background: var(--bad); box-shadow: 0 0 8px rgba(228,89,59,.5); }
+.chip-rail { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+/* narrow screens: let long chips wrap instead of silently clipping */
+@media (max-width: 620px) { .chip { white-space: normal; border-radius: 12px; } }
+
+/* ── section scaffolding ────────────────────────────────── */
+section { padding: clamp(60px, 8.5vw, 96px) 0; position: relative; }
+.sec-head { display: flex; align-items: baseline; justify-content: space-between; gap: var(--s4); flex-wrap: wrap; margin-bottom: var(--s3); }
+/* the title column wraps before the pinning chip does — chip stays right in every section */
+.sec-head > div:first-child { flex: 1 1 320px; min-width: 0; max-width: 640px; }
+.sec-head > .chip { flex: 0 0 auto; }
+.sec-head h2 { margin-top: var(--s3); }
+.eyebrow {
+  font-family: var(--mono); font-size: .78rem; letter-spacing: .14em;
+  color: var(--ink-primary); text-transform: uppercase;
+  display: inline-flex; align-items: center; gap: 10px;
+}
+.eyebrow::before { content: ""; width: 22px; height: 1px; background: var(--ink-primary); opacity: .7; }
+.sec-sub { color: var(--text-mid); margin-top: var(--s3); font-size: 1.06rem; max-width: 62ch; }
+.hr-glow { border: 0; height: 1px; background: linear-gradient(90deg, transparent, var(--line), transparent); margin: 0; }
+
+/* ── reveal on scroll ───────────────────────────────────── */
+.reveal {
+  opacity: 0; transform: translateY(16px);
+  transition: opacity var(--dur-reveal) var(--ease-out), transform var(--dur-reveal) var(--ease-out);
+}
+.reveal.in { opacity: 1; transform: none; }
+.reveal.d1 { transition-delay: 70ms; } .reveal.d2 { transition-delay: 140ms; } .reveal.d3 { transition-delay: 210ms; }
+
+/* ── hero ───────────────────────────────────────────────── */
+.hero { padding: clamp(40px, 6.5vw, 88px) 0 clamp(36px, 5vw, 56px); position: relative; }
+.hero::before {
+  content: ""; position: absolute; inset: -80px 0 0 0; z-index: -1;
+  background: var(--mesh); pointer-events: none;
+}
+.hero-grid { display: grid; grid-template-columns: minmax(0, 1.08fr) minmax(0, .92fr); gap: clamp(28px, 5vw, 64px); align-items: center; }
+@media (max-width: 940px) { .hero-grid { grid-template-columns: 1fr; } }
+.hero h1 { font-size: clamp(2.15rem, 4.9vw, 3.7rem); line-height: 1.05; margin: var(--s4) 0 var(--s5); }
+.hero h1 .grad {
+  background: var(--grad-hero); -webkit-background-clip: text; background-clip: text; color: transparent;
+}
+.hero h1 .quiet { display: block; margin-top: .12em; color: var(--text-mid); font-style: italic; font-weight: 500; font-size: .82em; letter-spacing: -0.014em; }
+.lede { color: var(--text-mid); font-size: 1.13rem; max-width: 56ch; }
+.cta-row { display: flex; gap: var(--s3); margin: var(--s6) 0 var(--s5); flex-wrap: wrap; }
+.btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  font-weight: 600; font-size: .98rem; line-height: 1;
+  padding: 14px 22px; border-radius: var(--r-md); border: 1px solid transparent;
+  transition: transform var(--dur-hover) var(--ease-out), box-shadow var(--dur-hover) var(--ease-out),
+              background var(--dur-tint) var(--ease-in-out), border-color var(--dur-tint) var(--ease-in-out);
+  cursor: pointer;
+}
+.btn:hover, .btn:focus-visible { text-decoration: none; transform: translateY(-2px); }
+/* press reads as a real press: snap down, no easing lag */
+.btn:active { transform: translateY(1px); transition-duration: 60ms; }
+.btn-primary { background: var(--grad-hero); color: #190D06; box-shadow: var(--shadow-md); }
+.btn-primary:hover, .btn-primary:focus-visible { box-shadow: var(--shadow-md), var(--glow-primary); }
+.btn-ghost { border-color: var(--line); color: var(--text-hi); background: transparent; }
+.btn-ghost:hover, .btn-ghost:focus-visible { border-color: var(--primary-bright); background: var(--card-strong); }
+.btn .arr { transition: transform var(--dur-hover) var(--ease-out); }
+.btn:hover .arr, .btn:focus-visible .arr { transform: translateY(2px); }
+/* the up-arrow CTAs in the closing band travel the other way */
+.close .btn:hover .arr, .close .btn:focus-visible .arr { transform: translateY(-2px); }
+@media (max-width: 400px) { .btn { width: 100%; justify-content: center; } }
+
+/* the drawn label artifact (content = the real fixture label, byte-for-byte) */
+.artifact { position: relative; max-width: 460px; margin: 0 auto; }
+.artifact-tilt { transform: rotate(-1.6deg); transition: transform var(--dur-lift) var(--ease-out); }
+.artifact:hover .artifact-tilt { transform: rotate(-0.4deg) translateY(-4px); }
+.label-paper {
+  background: var(--paper); color: var(--paper-ink);
+  border-radius: var(--r-md);
+  padding: clamp(18px, 3.4vw, 28px);
+  box-shadow: var(--shadow-lg), var(--paper-edge), 0 2px 0 rgba(255,255,255,.14) inset;
+  font-family: var(--mono); font-size: .82rem; line-height: 1.75;
+  background-image: repeating-linear-gradient(0deg, rgba(20,13,10,.016) 0 1px, transparent 1px 3px);
+  position: relative;
+}
+.label-paper .biz { font-weight: 700; font-size: 1.02rem; letter-spacing: -.01em; }
+.label-paper .head { padding-right: clamp(80px, 12vw, 104px); }
+.label-paper .mandated {
+  border: 2px dashed var(--primary);
+  background: rgba(194, 85, 43, 0.07);
+  color: #8C3A1B; font-weight: 700; font-size: .74rem; letter-spacing: .01em;
+  padding: 10px 12px; border-radius: 8px; margin: 12px 0; line-height: 1.55;
+}
+.label-paper .tiny { font-size: .68rem; color: #7A6A5C; overflow-wrap: anywhere; }
+.label-qr {
+  position: absolute; top: 16px; right: 16px;
+  width: clamp(64px, 9vw, 88px); height: auto;
+  background: #fff; border-radius: 8px; padding: 5px;
+  box-shadow: var(--shadow-sm); border: 1px solid rgba(20,13,10,.12);
+}
+.label-qr svg { display: block; width: 100%; height: auto; }
+.stamp {
+  position: absolute; top: -18px; left: -10px; z-index: 2;
+  transform: rotate(-8deg);
+  font-family: var(--mono); font-weight: 700; font-size: .82rem; letter-spacing: .1em;
+  color: var(--stamp-ink); border: 3px solid var(--stamp-ink); border-radius: 10px;
+  padding: 7px 12px; background: color-mix(in srgb, var(--paper) 90%, var(--stamp-ink) 10%);
+  box-shadow: var(--shadow-md);
+}
+.artifact-chips { margin-top: var(--s4); justify-content: center; }
+@media (max-width: 940px) { .artifact { margin-top: var(--s5); } }
+
+/* honesty ribbon */
+.ribbon {
+  border: 1px solid var(--line);
+  border-left: 4px solid var(--accent);
+  background: var(--card);
+  border-radius: var(--r-md);
+  padding: var(--s4) var(--s5);
+  display: flex; gap: var(--s4); align-items: flex-start;
+  margin-top: clamp(32px, 5vw, 56px);
+}
+/* every mono pill on the page shares one 12px horizontal inset — chip, fixture flag,
+   READ FIRST, replay badge, copy button. They read as one vocabulary. */
+.ribbon .k {
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--ink-accent);
+  border: 1px solid var(--line); border-radius: var(--r-pill); padding: 5px 12px; white-space: nowrap; margin-top: 2px;
+}
+.ribbon p { font-size: .95rem; color: var(--text-mid); max-width: none; }
+@media (max-width: 560px) { .ribbon { flex-direction: column; gap: var(--s3); padding: var(--s4); } }
+
+/* thin credibility rail under the ribbon — six numbers live in §04, not here */
+.proofstrip {
+  margin-top: var(--s4);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 18px;
+  font-family: var(--mono); font-size: .78rem; color: var(--text-mid);
+  padding: 10px 2px;
+}
+.proofstrip b { color: var(--ink-accent); font-weight: 600; }
+.proofstrip .sep { color: var(--line); }
+.proofstrip .go { margin-left: auto; color: var(--ink-primary); white-space: nowrap; }
+@media (max-width: 720px) { .proofstrip .sep { display: none; } .proofstrip .go { margin-left: 0; } }
+
+/* ── stat wall (lives inside §04 Run the proof) ─────────── */
+.stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); margin-top: var(--s6); }
+@media (max-width: 860px) { .stats { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 520px) { .stats { grid-template-columns: 1fr; } }
+.stat {
+  border: 1px solid var(--line-subtle); border-radius: var(--r-md);
+  background: var(--card); padding: var(--s4) var(--s4) var(--s3);
+  transition: border-color var(--dur-tint) var(--ease-in-out), background var(--dur-tint) var(--ease-in-out),
+              transform var(--dur-hover) var(--ease-out);
+}
+.stat:hover { border-color: var(--line); transform: translateY(-2px); background: var(--card-strong); }
+.stat .n {
+  font-family: var(--serif); font-size: clamp(1.7rem, 3vw, 2.15rem); font-weight: 700;
+  color: var(--ink-accent); line-height: 1.1; letter-spacing: -0.02em;
+}
+.stat .n.green { color: var(--ok); }
+.stat .n.alarm { color: var(--bad); }
+.stat .what { color: var(--text-hi); font-size: .93rem; margin-top: var(--s1); text-wrap: pretty; }
+.stat .how { font-family: var(--mono); font-size: .72rem; color: var(--text-low); margin-top: var(--s2); overflow-wrap: anywhere; }
+
+/* ── problem ────────────────────────────────────────────── */
+.problem-grid { display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(28px, 4vw, 48px); align-items: start; margin-top: var(--s6); }
+@media (max-width: 900px) { .problem-grid { grid-template-columns: 1fr; } }
+.problem-grid p + p { margin-top: var(--s4); }
+.consult-card {
+  border: 1px solid var(--line); border-radius: var(--r-lg); overflow: hidden; background: var(--card);
+}
+.consult-row { display: flex; justify-content: space-between; align-items: baseline; gap: var(--s4); padding: var(--s4) var(--s5); }
+.consult-row + .consult-row { border-top: 1px dashed var(--line-subtle); }
+.consult-row .lbl { color: var(--text-mid); font-size: .95rem; }
+.consult-row .amt { font-family: var(--serif); font-weight: 700; font-size: 1.5rem; letter-spacing: -0.018em; color: var(--text-hi); white-space: nowrap; }
+.consult-row.hot { background: linear-gradient(90deg, rgba(194,85,43,.12), rgba(245,184,65,.07)); }
+.consult-row.hot .amt { color: var(--ink-accent); }
+.consult-foot { padding: var(--s3) var(--s5); font-family: var(--mono); font-size: .74rem; color: var(--text-low); border-top: 1px solid var(--line-subtle); }
+@media (max-width: 440px) {
+  .consult-row { flex-direction: column; align-items: flex-start; gap: 4px; padding: var(--s4); }
+  .consult-foot { padding: var(--s3) var(--s4); }
+}
+
+/* ── refusal duel — the emotional centre ────────────────── */
+.duel-diff {
+  margin-top: var(--s6);
+  display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px;
+  font-family: var(--mono); font-size: .78rem;
+  border: 1px dashed var(--line); border-radius: var(--r-md);
+  background: var(--card); padding: var(--s3) var(--s4); color: var(--text-low);
+}
+.duel-diff .same { color: var(--text-mid); }
+.duel-diff .same b { color: var(--text-hi); font-weight: 600; }
+.duel-diff .delta { color: var(--text-mid); }
+.duel-diff .delta s { color: var(--text-low); text-decoration-thickness: 1px; }
+.duel-diff .delta b { color: var(--bad); font-weight: 700; }
+@media (max-width: 620px) {
+  .duel-diff { flex-direction: column; align-items: flex-start; gap: 6px; }
+  .duel-diff .turn { display: none; }
+  .duel-diff .delta::before { content: "↳ "; color: var(--text-low); }
+}
+.duel { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s5); margin-top: var(--s3); align-items: start; }
+@media (max-width: 900px) { .duel { grid-template-columns: 1fr; } }
+.verdict-card {
+  border-radius: var(--r-lg); border: 1px solid var(--line-subtle);
+  background: var(--card); overflow: hidden;
+  transition: transform var(--dur-lift) var(--ease-out), box-shadow var(--dur-lift) var(--ease-out),
+              border-color var(--dur-tint) var(--ease-in-out);
+}
+.verdict-card:hover, .verdict-card:focus-within { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
+.verdict-card.ok-side { border-top: 3px solid var(--ok); }
+.verdict-card.bad-side {
+  border-top: 3px solid var(--bad);
+  border-color: color-mix(in srgb, var(--bad) 32%, transparent);
+  background: linear-gradient(180deg, var(--bad-soft), transparent 42%), var(--card);
+  box-shadow: var(--shadow-md);
+}
+.verdict-card .vc-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s4) var(--s4) 0; flex-wrap: wrap; }
+.verdict-badge {
+  font-family: var(--mono); font-weight: 700; font-size: .78rem; letter-spacing: .08em;
+  padding: 7px 12px; border-radius: 9px;
+}
+.verdict-badge.ok { background: var(--ok-soft); color: var(--ok); }
+.verdict-badge.bad { background: var(--bad-soft); color: var(--bad); }
+.vc-note { font-family: var(--mono); font-size: .72rem; color: var(--text-low); }
+.verdict-card figure { margin: var(--s4); }
+.verdict-card img { border-radius: var(--r-sm); border: 1px solid var(--line-subtle); }
+.verdict-card figcaption { font-size: .88rem; color: var(--text-mid); margin-top: var(--s3); }
+.verdict-card figcaption em { color: var(--text-hi); font-style: normal; font-weight: 600; }
+
+.quoteblock {
+  margin-top: var(--s6); border-left: 4px solid var(--accent);
+  background: var(--card); border-radius: 0 var(--r-md) var(--r-md) 0;
+  padding: var(--s5) clamp(20px, 3vw, 32px);
+}
+.quoteblock blockquote {
+  font-family: var(--serif); font-size: clamp(1.18rem, 2.4vw, 1.55rem); font-style: italic;
+  line-height: 1.45; letter-spacing: -0.012em; color: var(--text-hi); max-width: 62ch;
+  /* optical hang for the opening “ — dropped where the engine hangs punctuation for us */
+  text-indent: -0.42em;
+}
+@supports (hanging-punctuation: first) { .quoteblock blockquote { text-indent: 0; } }
+.quoteblock .attr { margin-top: var(--s3); font-family: var(--mono); font-size: .76rem; color: var(--text-low); max-width: 74ch; }
+.quoteblock .attr b { color: var(--ink-accent); font-weight: 600; }
+
+.gates { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s3); margin-top: var(--s6); counter-reset: gate; }
+@media (max-width: 860px) { .gates { grid-template-columns: 1fr; } }
+.gate { border: 1px solid var(--line-subtle); border-radius: var(--r-md); padding: var(--s4); background: var(--card); position: relative; }
+.gate::before {
+  counter-increment: gate; content: counter(gate, decimal-leading-zero);
+  font-family: var(--mono); font-size: .72rem; color: var(--ink-primary); letter-spacing: .1em;
+}
+.gate h3 { font-size: 1.04rem; margin: 6px 0 var(--s2); }
+.gate p { font-size: .91rem; color: var(--text-mid); }
+
+/* ── machinery pipeline ─────────────────────────────────── */
+.pipe { display: grid; grid-template-columns: repeat(4, 1fr); gap: var(--s3); margin-top: var(--s6); }
+@media (max-width: 980px) { .pipe { grid-template-columns: repeat(2, 1fr); } }
+@media (max-width: 560px) { .pipe { grid-template-columns: 1fr; } }
+.stage {
+  border: 1px solid var(--line-subtle); border-radius: var(--r-md);
+  background: var(--card); padding: var(--s4);
+  position: relative;
+  transition: border-color var(--dur-tint) var(--ease-in-out), transform var(--dur-hover) var(--ease-out);
+}
+.stage:hover { border-color: var(--line); transform: translateY(-2px); }
+.stage .num { font-family: var(--mono); font-size: .72rem; color: var(--ink-primary); letter-spacing: .12em; }
+/* card-internal rhythm, identical in .stage and .gate: mono label → 6px → title → 8px → body */
+.stage h3 { margin: 6px 0 var(--s2); font-size: 1.06rem; }
+.stage p { font-size: .89rem; color: var(--text-mid); }
+.stage .chips { margin-top: var(--s3); display: flex; flex-wrap: wrap; gap: 6px; }
+.stage .chip { font-size: .68rem; padding: 5px 9px; }
+.stage::after {
+  content: "→"; position: absolute; right: -14px; top: 50%; transform: translateY(-50%);
+  color: var(--text-low); font-size: 1rem; z-index: 1;
+}
+.stage:last-child::after { content: none; }
+@media (max-width: 980px) { .stage::after { content: none; } }
+
+/* ledger strip — real rows, the literal spine */
+.ledger-strip {
+  margin-top: var(--s5); border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--bg-inset); overflow-x: auto; padding: var(--s3) var(--s4);
+}
+.ledger-strip table { border-collapse: collapse; font-family: var(--mono); font-size: .76rem; white-space: nowrap; min-width: 700px; width: 100%; }
+.ledger-strip td { padding: 6px 18px 6px 0; color: var(--text-mid); border-top: 1px dashed var(--line-subtle); }
+.ledger-strip tr:first-child td { border-top: 0; }
+.ledger-strip .seq { color: var(--ink-accent); }
+.ledger-strip .agent { color: var(--ink-primary); }
+.ledger-strip .sig { color: var(--ok); }
+.ledger-cap { font-family: var(--mono); font-size: .72rem; color: var(--text-low); margin-top: var(--s3); overflow-wrap: anywhere; max-width: none; }
+.ledger-cap b { color: var(--ink-accent); font-weight: 600; }
+
+/* gemini boundary */
+.boundary { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s3); margin-top: var(--s6); }
+@media (max-width: 860px) { .boundary { grid-template-columns: 1fr; } }
+.bound-card { border-radius: var(--r-md); padding: var(--s5); border: 1px solid var(--line-subtle); background: var(--card); }
+.bound-card.may { border-top: 3px solid var(--ok); }
+.bound-card.maynot { border-top: 3px solid var(--bad); }
+.bound-card h3 { display: flex; align-items: center; gap: 9px; font-size: 1.12rem; }
+.bound-card ul { margin: var(--s3) 0 0; padding-left: 1.15em; }
+.bound-card li { font-size: .93rem; color: var(--text-mid); margin-top: 7px; }
+.tick { color: var(--ok); font-weight: 700; }
+.cross { color: var(--bad); font-weight: 700; }
+
+/* evidence figures */
+.evidence { margin-top: var(--s6); }
+.evidence figure { margin: 0; }
+.frame {
+  display: block;
+  border: 1px solid var(--line); border-radius: var(--r-md); overflow: hidden;
+  background: var(--bg-inset); box-shadow: var(--shadow-md);
+  transition: transform var(--dur-lift) var(--ease-out), box-shadow var(--dur-lift) var(--ease-out);
+}
+a.frame-link { display: block; border-radius: var(--r-md); }
+/* keyboard gets the same lift as the mouse — the ring rides the frame, not the bare anchor box */
+a.frame-link:hover .frame,
+a.frame-link:focus-visible .frame { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+a.frame-link:focus-visible { outline: none; }
+a.frame-link:focus-visible .frame { outline: 2px solid var(--accent); outline-offset: 3px; }
+a.frame-link:hover { text-decoration: none; }
+figcaption { font-size: .88rem; color: var(--text-mid); margin-top: var(--s3); max-width: 80ch; }
+figcaption em { color: var(--text-hi); font-style: normal; font-weight: 600; }
+figcaption .open { font-family: var(--mono); font-size: .74rem; color: var(--ink-accent); white-space: nowrap; }
+.two-up { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s5); }
+@media (max-width: 900px) { .two-up { grid-template-columns: 1fr; } }
+/* on a short viewport (landscape phone, 13" laptop) a fixed 560px well eats the whole screen */
+.scroll-frame { max-height: min(560px, 74vh); overflow-y: auto; overscroll-behavior: contain; }
+.scroll-frame:focus-visible { outline-offset: -2px; }
+.scroll-hint { font-family: var(--mono); font-size: .72rem; color: var(--text-low); padding: var(--s2) var(--s4); border-bottom: 1px solid var(--line-subtle); background: var(--bg-raised); position: sticky; top: 0; z-index: 1; }
+.replay-badge {
+  display: inline-flex; align-items: center; gap: 8px;
+  font-family: var(--mono); font-size: .72rem; letter-spacing: .06em;
+  color: var(--ink-accent); border: 1px dashed var(--accent); border-radius: var(--r-pill);
+  padding: 5px 12px; margin-bottom: var(--s3);
+}
+
+/* ── judging triptych ───────────────────────────────────── */
+.trip { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); margin-top: var(--s6); }
+@media (max-width: 940px) { .trip { grid-template-columns: 1fr; } }
+.crit {
+  border: 1px solid var(--line-subtle); border-radius: var(--r-lg);
+  background: var(--card); padding: var(--s5);
+  display: flex; flex-direction: column; gap: var(--s3);
+  transition: border-color var(--dur-tint) var(--ease-in-out), transform var(--dur-hover) var(--ease-out);
+}
+.crit:hover { border-color: var(--line); transform: translateY(-3px); }
+.crit .tag { font-family: var(--mono); font-size: .72rem; letter-spacing: .13em; color: var(--ink-primary); }
+.crit h3 { font-size: 1.28rem; letter-spacing: -0.014em; }
+.crit p { font-size: .93rem; color: var(--text-mid); }
+.crit .honest-line { font-size: .88rem; color: var(--text-hi); border-left: 3px solid var(--accent); padding-left: 12px; }
+.crit .check { margin-top: auto; font-family: var(--mono); font-size: .74rem; color: var(--text-low); border-top: 1px dashed var(--line-subtle); padding-top: var(--s3); overflow-wrap: anywhere; }
+.crit .check b { color: var(--ink-accent); font-weight: 600; }
+
+/* ── proof ──────────────────────────────────────────────── */
+.cmdblock {
+  margin-top: var(--s6); border: 1px solid var(--line); border-radius: var(--r-md);
+  background: var(--bg-inset); overflow: hidden;
+}
+/* same 8/16 inset as .scroll-hint — the two annotation bars are one component family */
+.cmdblock .bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s3); padding: var(--s2) var(--s4); border-bottom: 1px solid var(--line-subtle); background: var(--card); }
+.cmdblock .bar span { font-family: var(--mono); font-size: .74rem; color: var(--text-low); }
+.copy-btn {
+  font-family: var(--mono); font-size: .72rem; color: var(--ink-accent);
+  background: transparent; border: 1px solid var(--line); border-radius: 7px;
+  padding: 5px 12px; cursor: pointer;
+  transition: border-color var(--dur-tint) var(--ease-in-out), background var(--dur-tint) var(--ease-in-out),
+              color var(--dur-tint) var(--ease-in-out), transform var(--dur-hover) var(--ease-out);
+  white-space: nowrap;
+  /* the label swaps to "copied ✓" on click — pin a floor so the bar never reflows */
+  min-width: 8ch; text-align: center;
+}
+.copy-btn:hover, .copy-btn:focus-visible { border-color: var(--accent); background: var(--card-strong); }
+/* press reads as a real press, matching .btn: snap down, no easing lag */
+.copy-btn:active { transform: translateY(1px) scale(0.98); transition-duration: 60ms; }
+.copy-btn[data-done="1"] { color: var(--ok); border-color: var(--ok); }
+.cmdblock pre { padding: var(--s4) clamp(16px, 3vw, 24px); overflow-x: auto; font-size: .84rem; line-height: 1.8; color: var(--text-hi); font-family: var(--mono); }
+.cmdblock pre .c { color: var(--text-low); }
+.cmdblock pre .out { color: var(--ok); }
+
+.proof-table-wrap { margin-top: var(--s5); border: 1px solid var(--line-subtle); border-radius: var(--r-md); overflow-x: auto; background: var(--card); }
+.proof-table { border-collapse: collapse; width: 100%; min-width: 680px; font-size: .9rem; }
+.proof-table th { text-align: left; font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--text-low); text-transform: uppercase; padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line); }
+.proof-table td { padding: var(--s3) var(--s4); border-bottom: 1px solid var(--line-subtle); vertical-align: top; color: var(--text-mid); }
+.proof-table tr:last-child td { border-bottom: 0; }
+/* the long CLI row must wrap, or it starves the other two columns */
+.proof-table th:nth-child(1) { width: 32%; } .proof-table th:nth-child(2) { width: 44%; } .proof-table th:nth-child(3) { width: 24%; }
+.proof-table td:first-child { font-family: var(--mono); font-size: .82rem; color: var(--ink-accent); overflow-wrap: anywhere; }
+.proof-table .exp { font-family: var(--mono); font-size: .8rem; color: var(--ok); }
+.table-hint { font-family: var(--mono); font-size: .72rem; color: var(--text-low); margin-top: 10px; }
+@media (min-width: 861px) { .table-hint { display: none; } }
+
+/* ── honesty ledger ─────────────────────────────────────── */
+.honest-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--s4); margin-top: var(--s6); }
+@media (max-width: 940px) { .honest-cols { grid-template-columns: 1fr; } }
+.hcol { border-radius: var(--r-lg); border: 1px solid var(--line-subtle); background: var(--card); padding: var(--s5); }
+.hcol h3 { display: flex; align-items: baseline; gap: 10px; font-size: 1rem; font-family: var(--mono); font-weight: 700; letter-spacing: .08em; }
+.hcol.real { border-top: 3px solid var(--ok); }
+.hcol.fixture { border-top: 3px solid var(--accent); }
+.hcol.notyet { border-top: 3px solid var(--primary); }
+.hcol.real h3 { color: var(--ok); }
+.hcol.fixture h3 { color: var(--ink-accent); }
+.hcol.notyet h3 { color: var(--ink-primary); }
+.hcol ul { margin: var(--s3) 0 0; padding-left: 1.1em; }
+.hcol li { font-size: .9rem; color: var(--text-mid); margin-top: 8px; }
+.coverage { margin-top: var(--s6); border: 1px solid var(--line-subtle); border-radius: var(--r-md); background: var(--card); padding: var(--s5); }
+.coverage h3 { margin-bottom: var(--s3); }
+.coverage p { max-width: 74ch; }
+.cov-row { display: grid; grid-template-columns: 220px 1fr; gap: var(--s4); align-items: center; padding: 8px 0; }
+@media (max-width: 620px) { .cov-row { grid-template-columns: 1fr; gap: 4px; } }
+.cov-row .st { font-family: var(--mono); font-size: .84rem; color: var(--text-hi); }
+.cov-row .st small { color: var(--text-low); font-size: .74rem; }
+.cov-bar { height: 10px; border-radius: 6px; background: var(--card-strong); border: 1px solid var(--line-subtle); overflow: hidden; }
+.cov-bar i { display: block; height: 100%; background: var(--grad-hero); border-radius: 6px; }
+.cov-bar.stub i { background: var(--line); }
+.livefill {
+  font-family: var(--mono); font-size: .8rem; color: var(--text-low);
+  border: 1px dashed var(--line); border-radius: var(--r-md);
+  padding: 12px 16px; display: inline-block; overflow-wrap: anywhere;
+}
+.link-slots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin-top: var(--s6); }
+@media (max-width: 720px) { .link-slots { grid-template-columns: 1fr; } }
+.slot { border: 1px solid var(--line-subtle); border-radius: var(--r-md); padding: var(--s4) var(--s5); background: var(--card); }
+.slot .k { font-family: var(--mono); font-size: .72rem; letter-spacing: .1em; color: var(--text-low); text-transform: uppercase; }
+.slot .v { margin: var(--s2) 0 var(--s3); }
+.slot p { font-size: .84rem; color: var(--text-low); max-width: none; }
+
+/* ── closing band ───────────────────────────────────────── */
+.close { text-align: center; padding: clamp(36px, 5vw, 64px) 0 clamp(56px, 8vw, 88px); position: relative; }
+.close::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: radial-gradient(ellipse 62% 105% at 50% 108%, rgba(194,85,43,.26), transparent 66%);
+}
+.close h2 { font-size: clamp(2rem, 5vw, 3.2rem); line-height: 1.06; letter-spacing: -0.024em; }
+/* the quiet turn is set smaller, so it needs its tracking given back */
+.close h2 .quiet { display: block; color: var(--text-mid); font-style: italic; font-weight: 500; font-size: .72em; letter-spacing: -0.012em; margin-top: .1em; }
+.close p { margin: var(--s5) auto 0; color: var(--text-mid); max-width: 56ch; }
+.close .cta-row { justify-content: center; margin-bottom: 0; }
+
+/* ── footer ─────────────────────────────────────────────── */
+footer { border-top: 1px solid var(--line-subtle); padding: var(--s7) 0 var(--s8); background: var(--bg-inset); }
+footer .cols { display: flex; justify-content: space-between; gap: var(--s6); flex-wrap: wrap; }
+footer .cols > div:first-child { flex: 1 1 380px; max-width: 620px; }
+footer .cols > div:last-child { flex: 0 1 420px; }
+footer p { font-size: .88rem; color: var(--text-mid); }
+footer .fine { font-family: var(--mono); font-size: .74rem; color: var(--text-low); margin-top: var(--s4); max-width: 78ch; }
+.built-with { display: flex; flex-wrap: wrap; gap: 8px; margin-top: var(--s4); }
+
+/* ── high-contrast preference ───────────────────────────── */
+@media (prefers-contrast: more) {
+  :root {
+    --text-mid: #D8CEC4; --text-low: #B5A798;
+    --line: rgba(255, 245, 230, .34); --line-subtle: rgba(255, 245, 230, .20);
+    --card: rgba(255, 245, 230, .07); --card-strong: rgba(255, 245, 230, .11);
+  }
+  @media (prefers-color-scheme: light) {
+    :root {
+      --text-mid: #4B3D33; --text-low: #5E5045;
+      --line: rgba(20, 13, 10, .38); --line-subtle: rgba(20, 13, 10, .22);
+      --card: rgba(20, 13, 10, .05); --card-strong: rgba(20, 13, 10, .08);
+    }
+  }
+  .verdict-card, .stat, .stage, .gate, .crit, .hcol, .bound-card, .slot { border-width: 1px; border-color: var(--line); }
+}
+
+/* ── motion guard: reduced motion wins everywhere ───────── */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .site nav a::after { transform: scaleX(0); }
+  .site nav a:hover::after, .site nav a:focus-visible::after, .site nav a.active::after { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  .artifact-tilt { animation: floaty 7s ease-in-out infinite; }
+  @keyframes floaty { 0%, 100% { translate: 0 0; } 50% { translate: 0 -7px; } }
+}
+
+/* ══════════════ PRINT — a judge saving this to PDF ══════════════
+   Two things had to be true: nothing may be invisible (the scroll-reveal
+   transform would otherwise blank every below-the-fold section in the PDF),
+   and no page may burn a full sheet of #140D0A. The dark tokens are remapped
+   to ink-on-paper; brand colour survives only where it carries meaning. */
+@media print {
+  :root {
+    --bg: #FFFFFF; --bg-raised: #FFFFFF; --bg-inset: #FAF6F0;
+    --card: rgba(20, 13, 10, .03); --card-strong: rgba(20, 13, 10, .05);
+    --text-hi: #140D0A; --text-mid: #3A2E26; --text-low: #5C4E43;
+    --line-subtle: rgba(20, 13, 10, .20); --line: rgba(20, 13, 10, .34);
+    --ink-accent: #855402; --ink-primary: #A6431D;
+    --ok: #14713A; --ok-soft: rgba(20, 113, 58, .10);
+    --bad: #A9391A; --bad-soft: rgba(169, 57, 26, .10);
+    --mesh: none;
+    --shadow-sm: none; --shadow-md: none; --shadow-lg: none; --glow-primary: none;
+    --paper-edge: inset 0 0 0 1px rgba(20, 13, 10, .30);
+    color-scheme: light;
+  }
+  @page { margin: 14mm 12mm; }
+  html, body {
+    background: #fff; overflow: visible;
+    font-size: 10.5pt; line-height: 1.5;
+    -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  }
+  /* A print snapshot is taken on the spot: any in-flight transition would be captured
+     part-way (a 0.49-opacity section in the PDF). Freeze motion, then force reveals on. */
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+  .reveal { opacity: 1 !important; transform: none !important; }
+  .skip, .copy-btn, .table-hint, .scroll-hint, .site nav, .proofstrip .go, .btn .arr { display: none !important; }
+  .site { position: static; box-shadow: none; backdrop-filter: none; -webkit-backdrop-filter: none; }
+  .site-inner { padding: 0 0 8px; }
+  .hero::before, .close::before { display: none !important; }
+  .wrap { max-width: none; padding: 0 4mm; }
+  section { padding: 8mm 0; }
+  .hero { padding: 4mm 0 6mm; }
+  h1 { font-size: 26pt; } h2 { font-size: 17pt; } h3 { font-size: 11.5pt; }
+  h1, h2, h3 { break-after: avoid-page; break-inside: avoid; }
+  p, li { orphans: 3; widows: 3; }
+  figure, .stat, .gate, .stage, .crit, .hcol, .bound-card, .slot, .verdict-card,
+  .quoteblock, .ribbon, .consult-card, .cmdblock, .coverage, .ledger-strip { break-inside: avoid; }
+  /* gradient-clipped text does not survive the print pipeline — give it solid ink */
+  .hero h1 .grad { background: none; -webkit-text-fill-color: currentColor; color: var(--ink-primary); }
+  .btn { background: none !important; color: var(--text-hi) !important; border: 1px solid var(--line) !important; box-shadow: none !important; transform: none !important; }
+  .hr-glow { background: none; border-top: 1px solid var(--line-subtle); }
+  .frame, .cmdblock, .proof-table-wrap, .ledger-strip, .label-paper { box-shadow: none; }
+  .label-paper { box-shadow: var(--paper-edge); }
+  .artifact-tilt { transform: none !important; animation: none !important; }
+  .stamp { position: static; display: inline-block; transform: none; margin-bottom: 6px; box-shadow: none; }
+  /* the 7416px-tall dashboard capture must not become twelve pages */
+  .scroll-frame { max-height: none; overflow: visible; }
+  .frame img { max-height: 120mm; width: auto; margin: 0 auto; }
+  .ledger-strip, .proof-table-wrap, .cmdblock pre { overflow: visible; }
+  .ledger-strip table, .proof-table { min-width: 0; font-size: 7.5pt; white-space: normal; }
+  .cmdblock pre { font-size: 8pt; }
+  /* a printed page has no hyperlinks: surface the evidence path in the caption */
+  a.frame-link::after, figcaption a.open::after {
+    content: " [" attr(href) "]";
+    font-family: var(--mono); font-size: 7.5pt; color: var(--text-low); font-weight: 400;
+  }
+  a.frame-link::after { display: block; margin-top: 3px; }
+  footer { background: none; border-top: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="site" id="siteHeader">
+  <div class="site-inner">
+    <a class="brand" href="#top" aria-label="OvenClear — back to top">
+      <svg width="26" height="26" viewBox="0 0 64 64" aria-hidden="true"><rect width="64" height="64" rx="14" fill="none"/><rect x="10" y="14" width="44" height="38" rx="8" fill="none" stroke="#C2552B" stroke-width="5"/><circle cx="20" cy="24" r="3.4" fill="#F5B841"/><path d="M20 41l8.5 8 16-16" fill="none" stroke="#F5B841" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      <span class="wm">OvenClear</span>
+    </a>
+    <nav aria-label="Sections" id="secnav">
+      <a href="#problem">Problem</a>
+      <a href="#refusal">The refusal</a>
+      <a href="#machinery">Machinery</a>
+      <a href="#proof">Run the proof</a>
+      <a href="#judging">Judging</a>
+      <a href="#honest">Honesty</a>
+    </nav>
+    <a class="fixture-flag" href="#honest" title="All rule text is synthetic fixture data — read the full disclosure">FIXTURE LAW · GA+TX DEEP</a>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ═══════════════════════ HERO ═══════════════════════ -->
+<section class="hero" id="top" aria-labelledby="hero-h">
+  <div class="wrap">
+    <div class="hero-grid">
+      <div>
+        <div class="chip-rail reveal">
+          <span class="chip"><b>XPRIZE</b> Build with Gemini · Devpost</span>
+          <span class="chip">Category 2 · <b>Entrepreneurship &amp; Job Creation</b></span>
+        </div>
+        <h1 id="hero-h" class="reveal d1">A $250 lawyer question, answered for <span class="grad">$19</span>&nbsp;—<span class="quiet">and kept true after the law moves.</span></h1>
+        <p class="lede reveal d2">
+          Every state writes its own cottage-food law. OvenClear gives a home baker a
+          <strong>statute-cited verdict</strong> on &ldquo;can I sell this?&rdquo; and a
+          <strong>print-ready compliant label</strong> — then <strong>re-issues that label</strong>
+          when the law changes. Every decision lands on a public, signed, tamper-evident ledger.
+        </p>
+        <div class="cta-row reveal d3">
+          <a class="btn btn-primary" href="#refusal">Watch it refuse a sale <span class="arr" aria-hidden="true">↓</span></a>
+          <a class="btn btn-ghost" href="#proof">Run the proof yourself <span class="arr" aria-hidden="true">↓</span></a>
+        </div>
+        <div class="chip-rail reveal d3" aria-label="Real artifact hashes from the committed pipeline export">
+          <span class="chip">law snapshot <b>ac613546c5e5…</b></span>
+          <span class="chip">verdict <b>0aa02fa04e65…</b></span>
+          <span class="chip">merkle root <b>fa7758f0f920…</b></span>
+        </div>
+      </div>
+
+      <div class="artifact reveal d2">
+        <div class="artifact-tilt">
+          <div class="stamp" aria-hidden="true">✓ CLEARED</div>
+          <div class="label-paper" role="img" aria-label="The actual fixture label the engine issues: Rosa's Bakes, Marietta, Georgia — sourdough bread, with the state-mandated cottage-food sentence reproduced byte-for-byte and a QR code linking to its provenance page. Marked as a fixture label with synthetic demo data.">
+            <div class="label-qr" aria-hidden="true">
+              <!-- The real QR the pipeline generated for this label (encodes the fixture provenance URL) -->
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 35 35" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h35v35H0z"/><path stroke="#140D0A" d="M1 1.5h7m2 0h2m5 0h1m1 0h4m1 0h1m2 0h7M1 2.5h1m5 0h1m3 0h2m3 0h1m2 0h1m1 0h1m5 0h1m5 0h1M1 3.5h1m1 0h3m1 0h1m1 0h1m2 0h2m1 0h1m8 0h2m1 0h1m1 0h3m1 0h1M1 4.5h1m1 0h3m1 0h1m1 0h3m4 0h1m2 0h1m3 0h1m3 0h1m1 0h3m1 0h1M1 5.5h1m1 0h3m1 0h1m1 0h1m1 0h3m1 0h4m2 0h1m3 0h1m1 0h1m1 0h3m1 0h1M1 6.5h1m5 0h1m1 0h4m2 0h1m4 0h1m1 0h2m1 0h1m1 0h1m5 0h1M1 7.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M9 8.5h1m1 0h1m3 0h1m1 0h1m2 0h3m2 0h1M1 9.5h1m1 0h5m2 0h6m2 0h1m1 0h1m2 0h1m1 0h1m1 0h5M4 10.5h2m2 0h1m2 0h2m1 0h1m2 0h2m1 0h3m1 0h1m2 0h2m1 0h4M1 11.5h1m3 0h5m1 0h1m1 0h6m3 0h2m1 0h1m3 0h1m1 0h2M1 12.5h2m3 0h1m1 0h2m3 0h2m1 0h1m1 0h2m2 0h3m2 0h1m1 0h4M5 13.5h1m1 0h1m3 0h1m1 0h1m1 0h3m2 0h5m4 0h2M1 14.5h1m2 0h1m4 0h1m2 0h2m2 0h1m2 0h1m2 0h2m1 0h4m2 0h3M2 15.5h1m1 0h1m2 0h1m1 0h1m1 0h7m1 0h1m1 0h3m1 0h4m3 0h1M2 16.5h2m6 0h3m1 0h1m1 0h1m2 0h1m2 0h2m2 0h3m1 0h2M2 17.5h1m2 0h3m3 0h1m2 0h1m1 0h1m1 0h1m2 0h1m1 0h1m1 0h2m1 0h4m1 0h1M4 18.5h2m2 0h2m1 0h1m1 0h3m1 0h1m1 0h4m1 0h1m2 0h2m1 0h4M1 19.5h3m3 0h2m1 0h1m2 0h4m2 0h1m1 0h2m3 0h1m1 0h2m1 0h2M1 20.5h2m1 0h3m1 0h2m2 0h1m1 0h4m3 0h2m3 0h1m1 0h6M4 21.5h5m1 0h2m1 0h3m3 0h1m2 0h1m2 0h1m3 0h2m1 0h2M1 22.5h1m4 0h1m1 0h4m1 0h2m1 0h3m2 0h2m1 0h1m1 0h3m1 0h1m2 0h1M1 23.5h1m1 0h2m1 0h3m5 0h2m4 0h1m1 0h1m2 0h3m2 0h1m1 0h1M1 24.5h1m1 0h4m2 0h2m1 0h2m1 0h1m1 0h1m1 0h5m2 0h3m1 0h4M1 25.5h1m2 0h2m1 0h3m1 0h1m1 0h3m2 0h1m1 0h1m2 0h1m1 0h5m3 0h1M9 26.5h2m3 0h2m1 0h5m1 0h1m1 0h1m3 0h1m1 0h1m1 0h1M1 27.5h7m5 0h2m1 0h3m4 0h3m1 0h1m1 0h1m1 0h1M1 28.5h1m5 0h1m1 0h1m2 0h1m1 0h2m1 0h5m2 0h2m3 0h3M1 29.5h1m1 0h3m1 0h1m1 0h4m2 0h1m1 0h1m2 0h4m1 0h6m1 0h2M1 30.5h1m1 0h3m1 0h1m1 0h1m2 0h2m2 0h1m2 0h1m2 0h1m3 0h1m2 0h1m1 0h1m1 0h1M1 31.5h1m1 0h3m1 0h1m1 0h2m2 0h2m1 0h2m3 0h1m2 0h5M1 32.5h1m5 0h1m6 0h3m5 0h1m3 0h1m2 0h1m1 0h1M1 33.5h7m1 0h2m1 0h1m3 0h1m1 0h2m4 0h2m2 0h1m1 0h1m1 0h1"/></svg>
+            </div>
+            <div class="head">
+              <div class="biz">Rosa's Bakes</div>
+              <div>Marietta, GA</div>
+              <div>Product: sourdough bread</div>
+              <div>Ingredients: wheat flour, water, sea salt</div>
+              <div>Net Wt: 1 lb 8 oz (680 g)</div>
+              <div><strong style="color: inherit;">CONTAINS: WHEAT</strong></div>
+            </div>
+            <div class="mandated">MADE IN A COTTAGE FOOD OPERATION THAT IS NOT SUBJECT TO STATE FOOD SAFETY INSPECTION.</div>
+            <div class="tiny">Issued 2026-07-04 · Verify: https://ovenclear.example/label/qr_b10254dd7415</div>
+            <div class="tiny">[FIXTURE LABEL — synthetic demo data, not legal advice]</div>
+          </div>
+        </div>
+        <div class="chip-rail artifact-chips">
+          <span class="chip"><span class="dot" aria-hidden="true"></span>mandated sentence verbatim (I2)</span>
+          <span class="chip">sha256 <b>83097ac3d61c…</b></span>
+          <span class="chip">pack <b>GA@2026-07</b></span>
+        </div>
+      </div>
+    </div>
+
+    <aside class="ribbon reveal" aria-label="Honesty disclosure">
+      <span class="k">READ FIRST</span>
+      <p>
+        Every statute on this page is <strong>FIXTURE data</strong> — synthetic, statute-<em>shaped</em> text
+        modeled on real cottage-food programs, never verbatim law. Coverage is <strong>two states deep
+        (GA, TX) plus two stubs (CA, FL)</strong>, said plainly, because a compliance product that overstates
+        its coverage is worse than useless. The machinery is real, and
+        <a href="#proof">every number here is the output of a command you can run</a>.
+      </p>
+    </aside>
+
+    <div class="proofstrip reveal d1" aria-label="Verified figures, reproduced in section 04">
+      <span><b>149</b> tests green</span><span class="sep" aria-hidden="true">·</span>
+      <span><b>0&nbsp;/&nbsp;28</b> golden flips</span><span class="sep" aria-hidden="true">·</span>
+      <span><b>78&nbsp;/&nbsp;78</b> signatures verified</span><span class="sep" aria-hidden="true">·</span>
+      <span>tamper caught at <b>seq&nbsp;39</b></span>
+      <a class="go" href="#proof">every number, with its command ↓</a>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ PROBLEM ═══════════════════════ -->
+<section id="problem" aria-labelledby="problem-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">01 · The problem</span>
+        <h2 id="problem-h">The question that stops a founder before she starts</h2>
+      </div>
+      <span class="chip">the ask: <b>&ldquo;can I sell this?&rdquo;</b></span>
+    </div>
+    <div class="problem-grid">
+      <div class="reveal">
+        <p>
+          Which foods a home kitchen may sell, at which venues, under which license, and the
+          <strong>exact sentence that must appear on the label</strong> — every state answers
+          differently, and the answers change. A baker weighing her first farmers-market booth
+          guesses, gives up, or pays for a food-law consult that costs more than her first month
+          of profit.
+        </p>
+        <p>
+          Then one clause in a labeling section moves, and nobody tells her the label she is
+          printing tonight is now wrong.
+        </p>
+        <p>
+          A consultant answers once. OvenClear answers with the statute quoted and a hash pinning
+          the exact text it relied on — then does what no consultant does: it
+          <strong>keeps the answer true</strong>, re-issuing the label when the rule beneath it changes.
+        </p>
+      </div>
+      <div class="consult-card reveal d1">
+        <div class="consult-row"><span class="lbl">Food-law consult — one question, answered once</span><span class="amt">$250</span></div>
+        <div class="consult-row"><span class="lbl">Facebook-group folklore</span><span class="amt">free, wrong</span></div>
+        <div class="consult-row hot"><span class="lbl">OvenClear — verdict, citations, label, provenance page, and re-issue when the law moves</span><span class="amt">$19</span></div>
+        <div class="consult-foot">one-time · Law-Watch re-issue is the retention mechanic</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow">
+
+<!-- ═══════════════════════ REFUSAL ═══════════════════════ -->
+<section id="refusal" aria-labelledby="refusal-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">02 · The refusal</span>
+        <h2 id="refusal-h">It says no. That is the product.</h2>
+      </div>
+      <span class="chip bad"><span class="dot" aria-hidden="true"></span>verdict <b>3a128de0eef0…</b></span>
+    </div>
+    <p class="sec-sub reveal">
+      Most compliance demos are yes-machines. Change one field and OvenClear declines the sale:
+      cheesecake is not a shelf-stable baked good, so it quotes the refrigeration rule back at you
+      instead of taking $19.
+    </p>
+
+    <div class="duel-diff reveal" aria-label="What differs between the two verdicts">
+      <span class="same">identical: <b>state GA</b> · <b>farmers market</b> · same rulepack <b>GA@2026-07</b></span>
+      <span class="turn" aria-hidden="true">→</span>
+      <span class="delta">one field changes: product <s>sourdough bread</s> <b>cheesecake</b></span>
+    </div>
+
+    <div class="duel">
+      <div class="verdict-card ok-side reveal">
+        <div class="vc-head">
+          <span class="verdict-badge ok">✓ CLEARED · ELIGIBLE</span>
+          <span class="vc-note">GA · sourdough · farmers market</span>
+        </div>
+        <figure>
+          <a class="frame-link" href="evidence/03-verdict-cleared.png">
+            <span class="frame"><img src="evidence/03-verdict-cleared.png" width="1058" height="784" loading="lazy" decoding="async" alt="Cleared verdict card from the /verify dashboard: Rosa's Bakes, Marietta GA, sourdough at a farmers market — CLEARED, ELIGIBLE, with the fixture statute quote naming eligible cottage foods including sourdough, citation GA-CF-3.1, and law-snapshot plus verdict hash chips."></span>
+          </a>
+          <figcaption><em>Eligible, cited, pinned.</em> The statute is quoted verbatim from its hash-pinned snapshot — a verdict without a pinned snapshot hash cannot exist (invariant I1). <span class="open">open full size ↗</span></figcaption>
+        </figure>
+      </div>
+      <div class="verdict-card bad-side reveal d1">
+        <div class="vc-head">
+          <span class="verdict-badge bad">✕ REFUSED · NOT ALLOWED</span>
+          <span class="vc-note">GA · cheesecake · farmers market</span>
+        </div>
+        <figure>
+          <a class="frame-link" href="evidence/04-verdict-refusal.png">
+            <span class="frame"><img src="evidence/04-verdict-refusal.png" width="1058" height="784" loading="lazy" decoding="async" alt="Refusal card from the /verify dashboard: Charlie's Cheesecakes, Atlanta GA, cheesecake at a farmers market — REFUSED, NOT ALLOWED, quoting the fixture refrigeration rule, citation GA-CF-1.2, with the note: no label issued, fails closed."></span>
+          </a>
+          <figcaption><em>Refused, and it shows the sentence it refused on:</em> <span class="mono">&ldquo;requires time or temperature control for safety, including cheesecakes&hellip;&rdquo;</span> — GA-CF-1.2 (FIXTURE). No label is issued. It fails closed. <span class="open">open full size ↗</span></figcaption>
+        </figure>
+      </div>
+    </div>
+
+    <div class="quoteblock reveal">
+      <blockquote>
+        &ldquo;We are not going to sell you a label for this. &hellip; Charging you $19 for a label you
+        cannot legally use would be the product failing.&rdquo;
+      </blockquote>
+      <p class="attr">— the storefront&rsquo;s actual refusal page, <b>server/pages.ts</b>. Not an error state. It is written like the product&rsquo;s proudest moment, because it is.</p>
+    </div>
+
+    <div class="gates">
+      <div class="gate reveal"><h3>Verdict before payment</h3><p>The verdict is computed and shown <strong>before</strong> checkout exists. A prohibited product never reaches a pay button.</p></div>
+      <div class="gate reveal d1"><h3>Recomputed at checkout</h3><p>The server re-runs the verdict on its own state at checkout. A hidden-field edit cannot talk it into selling a label the state disallows.</p></div>
+      <div class="gate reveal d2"><h3>Refund over revenue</h3><p>If a prohibited order is paid anyway, fulfillment refuses the label and flags a refund rather than keeping the money. The QA gate fails closed after payment too.</p></div>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow">
+
+<!-- ═══════════════════════ MACHINERY ═══════════════════════ -->
+<section id="machinery" aria-labelledby="machinery-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">03 · The machinery</span>
+        <h2 id="machinery-h">Question → verdict → label → re-issue, on a signed ledger</h2>
+      </div>
+      <span class="chip">law snapshot <b>ac613546c5e5…</b></span>
+    </div>
+    <p class="sec-sub reveal">
+      The compliance decision is a deterministic table over hash-pinned law snapshots — not a
+      language model. Gemini sits around that core, constrained. Every step appends to a
+      hash-chained ledger with per-agent Ed25519 signatures and daily Merkle roots.
+    </p>
+
+    <div class="pipe" role="list">
+      <div class="stage reveal" role="listitem">
+        <div class="num">STAGE 1</div>
+        <h3>Intake</h3>
+        <p>Six structured questions, no chat box. &ldquo;My tangy no-knead boule&rdquo; hits a deterministic catalog first; Gemini only gets a turn on a miss.</p>
+        <div class="chips"><span class="chip">gemini-2.5-flash · <b>enum-locked</b></span></div>
+      </div>
+      <div class="stage reveal d1" role="listitem">
+        <div class="num">STAGE 2</div>
+        <h3>Verdict</h3>
+        <p>The table resolves product, venue, and state against pinned snapshots. Every citation quote is a byte-substring of its snapshot. Unknown category? It refuses rather than guesses.</p>
+        <div class="chips"><span class="chip"><span class="dot" aria-hidden="true"></span>I1 · pinned or no verdict</span></div>
+      </div>
+      <div class="stage reveal d2" role="listitem">
+        <div class="num">STAGE 3</div>
+        <h3>Label + QA gate</h3>
+        <p>The label is composed, never generated. A gate re-reads the finished artifact: every mandated sentence present byte-for-byte, or the label does not ship — paid or not.</p>
+        <div class="chips"><span class="chip"><span class="dot" aria-hidden="true"></span>I2 · fails closed</span></div>
+      </div>
+      <div class="stage reveal d3" role="listitem">
+        <div class="num">STAGE 4</div>
+        <h3>Law-Watch</h3>
+        <p>Snapshots are re-diffed and each delta classified material, cosmetic, or immaterial. Material label-text changes fan out: affected labels re-issue, chained to their previous version.</p>
+        <div class="chips"><span class="chip">gemini-2.5-pro · <b>materiality</b></span><span class="chip"><span class="dot" aria-hidden="true"></span>I3 · act or log</span></div>
+      </div>
+    </div>
+
+    <div class="ledger-strip reveal" role="region" aria-label="Excerpt of real signed ledger rows from the committed export" tabindex="0">
+      <table>
+        <tbody>
+          <tr><td class="seq">#53</td><td class="agent">lawwatch_agent</td><td>diff_computed — TX 2026-06-03 → 2026-07-01 · 5 deltas</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#56</td><td class="agent">lawwatch_agent</td><td>diff_classified — material / label_text · Section 6. Labeling</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#60</td><td class="agent">impact_agent</td><td>impact_resolved — label_text · 14 affected</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#61</td><td class="agent">lawwatch_agent</td><td>rulepack_registered — TX@2026-07</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#70</td><td class="agent">reissue_agent</td><td>label_reissued</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#72</td><td class="agent">reissue_agent</td><td>notification_sent</td><td class="sig">✓ signed</td></tr>
+          <tr><td class="seq">#77</td><td class="agent">impact_agent</td><td>material_diff_none_affected — logged (I3)</td><td class="sig">✓ signed</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="ledger-cap reveal">Real rows from the committed 78-row export · chain OK · 78 signatures · lastHash <b>620879cff8a562bd…</b> · merkleRoot <b>fa7758f0f920…</b></p>
+
+    <div class="boundary">
+      <div class="bound-card may reveal">
+        <h3><span class="tick" aria-hidden="true">✓</span> What Gemini may do</h3>
+        <ul>
+          <li><strong>Widen recall.</strong> <span class="mono">gemini-2.5-flash</span> maps &ldquo;my tangy no-knead boule&rdquo; onto <span class="mono">sourdough bread</span> — constrained to an enum of the catalog itself, then re-checked by the same deterministic normalizer before any rule runs.</li>
+          <li><strong>Classify materiality.</strong> <span class="mono">gemini-2.5-pro</span> reads each law diff and calls it material, cosmetic, or immaterial — the hard problem in the subscription. Unclassifiable deltas default to <em>material</em>, the conservative direction.</li>
+        </ul>
+      </div>
+      <div class="bound-card maynot reveal d1">
+        <h3><span class="cross" aria-hidden="true">✕</span> What it may never do</h3>
+        <ul>
+          <li><strong>Invent a product</strong> or move one between categories.</li>
+          <li><strong>Turn a refusal into a sale</strong>, or admit a label the byte-verbatim QA gate rejected.</li>
+          <li><strong>Overrule the table.</strong> If model and table disagree, the table wins — and the disagreement is recorded on the ledger.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="evidence reveal">
+      <figure>
+        <a class="frame-link" href="evidence/05-label-artifact-qr.png">
+          <span class="frame"><img src="evidence/05-label-artifact-qr.png" width="2152" height="910" loading="lazy" decoding="async" alt="The physical artifact panel: the print-ready Rosa's Bakes label with the mandated sentence outlined, next to a real scannable QR code, with chips showing label sha256, law snapshot hash, pack GA@2026-07, and 'mandated sentence verbatim (I2)'."></span>
+        </a>
+        <figcaption><em>What the $19 buys.</em> Mandated sentence byte-verbatim, and a real QR that resolves to a public per-label provenance page. <span class="open">open full size ↗</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="evidence reveal">
+      <span class="replay-badge">LABELED HISTORICAL REPLAY — a TX fixture amendment, not a live crawl</span>
+      <figure>
+        <div class="frame scroll-frame" role="region" aria-label="Law-watch replay panel — scrollable screenshot" tabindex="0">
+          <div class="scroll-hint">scroll to follow the fan-out ↓</div>
+          <img src="evidence/06-lawwatch-reissue-ledger.png" width="2152" height="3314" loading="lazy" decoding="async" alt="Law-watch panel titled 'The law moved. Nobody panicked.' showing the Texas snapshot pair, the before and after mandated sentence with the inserted words 'or a local health department' highlighted, a table classifying five deltas as material, cosmetic, or immaterial, counters for the 14-member fixture cohort, 9 auto-re-issued labels, 5 notified, 1 none-affected, the list of re-issued fixture businesses with new sha256 hashes, and the signed ledger rows beneath.">
+        </div>
+        <figcaption><em>One replayed amendment, end to end:</em> <span class="mono">5 deltas → 2 material / 1 cosmetic / 2 immaterial → 14 affected → 9 re-issued + 5 notified + 1 none-affected logged</span>. Every re-issued label re-passes the QA gate; every step is a signed row. No human in the loop. <a class="open" href="evidence/06-lawwatch-reissue-ledger.png">open full size ↗</a></figcaption>
+      </figure>
+    </div>
+
+    <div class="two-up evidence">
+      <figure class="reveal">
+        <a class="frame-link" href="evidence/07-merkle-tamper-badge.png">
+          <span class="frame"><img src="evidence/07-merkle-tamper-badge.png" width="2152" height="640" loading="lazy" decoding="async" alt="Provenance integrity panel: the daily Merkle root for 78 rows and 78 Ed25519 signatures, the verify command, and a REJECTED badge explaining that injecting one byte into row 39's payload localizes the mutation to seq 39 and rejects the whole export."></span>
+        </a>
+        <figcaption><em>A single changed byte cannot hide.</em> The export re-derives clean; then one injected byte is caught and localized to seq 39. <span class="open">open full size ↗</span></figcaption>
+      </figure>
+      <figure class="reveal d1">
+        <a class="frame-link" href="evidence/08-qr-provenance-reissued.png">
+          <span class="frame"><img src="evidence/08-qr-provenance-reissued.png" width="2560" height="1940" loading="lazy" decoding="async" alt="Public label-provenance page for fixture business Kate's Kolaches: FIXTURE banner, current mandated statement, QR code, hash chips, and an issue history showing the original label and the automatic re-issue triggered by the mandated-wording change, each QA-passed and ledgered."></span>
+        </a>
+        <figcaption><em>What the QR resolves to.</em> A public provenance page — current label, snapshot hash, and the full issue history including the automatic re-issue. Anyone holding the product can check the label is current. <span class="open">open full size ↗</span></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow">
+
+<!-- ═══════════════════════ PROOF ═══════════════════════ -->
+<section id="proof" aria-labelledby="proof-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">04 · Run the proof</span>
+        <h2 id="proof-h">Every figure here is a command output</h2>
+      </div>
+      <span class="chip">verified <b>2026-08-15</b> · offline · no API key</span>
+    </div>
+    <p class="sec-sub reveal">
+      No network, no API key, no account — Node&nbsp;≥&nbsp;18.17 and npm. Six numbers, each with the
+      command that prints it, then the exact expected tails.
+    </p>
+
+    <div class="stats">
+      <div class="stat reveal"><div class="n green">149</div><div class="what">tests across 10 files, all green</div><div class="how">npm test</div></div>
+      <div class="stat reveal d1"><div class="n green">0&nbsp;/&nbsp;28</div><div class="what">golden verdict flips — a rulepack edit cannot silently change an answer</div><div class="how">npm run bench</div></div>
+      <div class="stat reveal d2"><div class="n">≈24&nbsp;µs</div><div class="what">verdict p50 (p95 ≈35&nbsp;µs) — this machine; the shape holds</div><div class="how">npm run bench</div></div>
+      <div class="stat reveal"><div class="n green">12&nbsp;/&nbsp;12</div><div class="what">end-to-end self-test checks, fully offline</div><div class="how">npm run self-test</div></div>
+      <div class="stat reveal d1"><div class="n green">78&nbsp;/&nbsp;78</div><div class="what">ledger rows re-derived, Ed25519 signatures verified</div><div class="how">npm run verify-ledger</div></div>
+      <div class="stat reveal d2"><div class="n alarm">seq&nbsp;39</div><div class="what">one injected byte — caught, localized, whole export rejected</div><div class="how">npm run verify-ledger</div></div>
+    </div>
+
+    <div class="cmdblock reveal">
+      <div class="bar"><span>terminal — the whole gate</span><button class="copy-btn" type="button" data-copy="npm install&#10;npm run ci">copy</button></div>
+      <pre><span class="c"># clone the repo, then:</span>
+npm install
+npm run ci   <span class="c"># typecheck → tests → seed:check → self-test → verify-ledger → bench</span>
+<span class="out">SELF-TEST: PASS (12/12 checks)</span>
+<span class="out">PASS — clean export verifies; mutation localized + rejected at seq 39</span>
+<span class="out">golden verdict flips: 0 / 28</span></pre>
+    </div>
+
+    <div class="proof-table-wrap reveal">
+      <table class="proof-table">
+        <thead><tr><th>Command</th><th>What you witness</th><th>Expected tail</th></tr></thead>
+        <tbody>
+          <tr><td>npm run self-test</td><td>Interview → verdict → label + QA, the cheesecake refusal, then the TX replay fanning out to 9 auto-re-issues + 5 notices — all on the signed ledger</td><td class="exp">SELF-TEST: PASS (12/12 checks)</td></tr>
+          <tr><td>npm run verify-ledger</td><td>Recomputes the chain, all 78 Ed25519 signatures, and Merkle roots; then one injected byte is caught and localized</td><td class="exp">rejected at seq 39</td></tr>
+          <tr><td>npm run bench</td><td>Verdict latency over the golden set plus the zero-flip regression gate</td><td class="exp">golden verdict flips: 0 / 28</td></tr>
+          <tr><td>npm run serve</td><td>The storefront — landing, free verdict, checkout flow — with no Stripe key and no Gemini key</td><td class="exp">http://localhost:8080</td></tr>
+          <tr><td>npx tsx src/cli.ts check --state GA --product cheesecake --venue farmers-market</td><td>The refusal, in a terminal, statute-cited</td><td class="exp">NOT ALLOWED</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="table-hint">table scrolls sideways →</p>
+
+    <div class="two-up evidence">
+      <figure class="reveal">
+        <a class="frame-link" href="evidence/10-terminal-self-test.png">
+          <span class="frame"><img src="evidence/10-terminal-self-test.png" width="1920" height="1764" loading="lazy" decoding="async" alt="Captured stdout of npm run self-test: the Georgia interview, verdict, and label QA checks, the cheesecake refusal, the Texas amendment replay with 9 re-issues and 5 notices, the signed ledger tail, and the final line SELF-TEST: PASS (12/12 checks)."></span>
+        </a>
+        <figcaption><em>The end-to-end offline proof.</em> Real captured stdout of <span class="mono">npm run self-test</span>, ending in <span class="mono">PASS (12/12)</span>. <span class="open">open full size ↗</span></figcaption>
+      </figure>
+      <figure class="reveal d1">
+        <a class="frame-link" href="evidence/11-terminal-verify-ledger.png">
+          <span class="frame"><img src="evidence/11-terminal-verify-ledger.png" width="1920" height="1080" loading="lazy" decoding="async" alt="Captured stdout of npm run verify-ledger: the clean export re-derives with every signature verified, then a deliberately mutated row is rejected and localized to sequence 39."></span>
+        </a>
+        <figcaption><em>The tamper demo.</em> The clean export re-derives, then a mutated row is <span class="mono">rejected at seq 39</span>. <span class="open">open full size ↗</span></figcaption>
+      </figure>
+    </div>
+
+    <div class="evidence reveal">
+      <figure>
+        <div class="frame scroll-frame" role="region" aria-label="Full /verify dashboard — scrollable screenshot" tabindex="0">
+          <div class="scroll-hint">the full /verify dashboard — scroll ↓ · opens from file://, no server, no fetch</div>
+          <img src="evidence/01-dashboard-full.png" width="2560" height="7416" loading="lazy" decoding="async" alt="The complete /verify dashboard in one capture: counters sourced from the fixture ledger, the cleared and refused verdict cards, the print-ready label with QR, the Texas law-watch replay with its re-issue fan-out, the Merkle root and tamper badge, and the signed ledger table.">
+        </div>
+        <figcaption><em>The judge-visible dashboard,</em> rendering the committed pipeline export. Captured 2026-07-05, when the core suite stood at 128 tests — it stands at 149 today; regenerate all 17 captures yourself with <span class="mono">npm run evidence</span>. <a class="open" href="evidence/01-dashboard-full.png">open full size ↗</a></figcaption>
+      </figure>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow">
+
+<!-- ═══════════════════════ JUDGING ═══════════════════════ -->
+<section id="judging" aria-labelledby="judging-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">05 · The three criteria</span>
+        <h2 id="judging-h">Read it the way the rubric reads it</h2>
+      </div>
+      <span class="chip">merkle root <b>fa7758f0f920…</b></span>
+    </div>
+    <p class="sec-sub reveal">Three equal criteria, tie-broken in this order. Here is where each one lives in this build — and where it stops.</p>
+
+    <div class="trip">
+      <article class="crit reveal">
+        <span class="tag">TIE-BREAK 1</span>
+        <h3>Business Viability</h3>
+        <p>
+          A <strong>$19 one-time</strong> product with its whole order path built: landing, free
+          statute-cited verdict, Stripe Checkout, webhook fulfillment, print-ready label delivery,
+          public QR provenance — one codebase, no second copy of the decision logic.
+        </p>
+        <p>
+          The retention mechanic is the Law-Watch re-issue: recurring value is logged autonomous
+          work on the ledger, not a newsletter.
+        </p>
+        <p class="honest-line">Honest status: nothing has been sold and the service is not deployed. The rail is wired in Stripe test mode; flipping the key is a business milestone, not an engineering one.</p>
+        <p class="check">Check: <b>server/</b> — fulfill.ts refuses prohibited orders and flags refunds · <b>npm run serve</b> runs the storefront with no keys</p>
+      </article>
+
+      <article class="crit reveal d1">
+        <span class="tag">TIE-BREAK 2</span>
+        <h3>AI-Native Operations</h3>
+        <p>
+          The order path runs <strong>agent-operated end to end</strong> — intake, verdict, label
+          composition, QA gate, delivery, law-watch, re-issue — every decision appended to a
+          hash-chained, Ed25519-signed ledger under five test-enforced invariants.
+        </p>
+        <p>
+          Gemini makes real decisions inside hard limits: <span class="mono">gemini-2.5-flash</span>
+          resolves products enum-locked to the catalog; <span class="mono">gemini-2.5-pro</span>
+          classifies law-diff materiality, defaulting to material when unsure. The model proposes,
+          the table decides, disagreements are recorded.
+        </p>
+        <p class="honest-line">The offline proof runs a deterministic mock mirroring the exact Gemini response schema; the real adapters are wired and key-gated.</p>
+        <p class="check">Check: <b>npm run self-test</b> → 12/12 · <b>npm run verify-ledger</b> → 78/78 signatures, tamper at seq 39</p>
+      </article>
+
+      <article class="crit reveal d2">
+        <span class="tag">TIE-BREAK 3</span>
+        <h3>Category Impact</h3>
+        <p>
+          Category 2 is Entrepreneurship &amp; Job Creation, and every buyer of this product
+          <strong>is a founder</strong>: someone turning a home kitchen into legal income, blocked by
+          a question that costs more to answer than the business earns in its first month.
+        </p>
+        <p>
+          The impact metric is built to be <strong>ledger-sourced</strong> — home-food businesses
+          cleared and kept compliant, counted from signed rows, not asserted. Impact includes the
+          refusals: the founder it stops from launching illegally.
+        </p>
+        <p class="honest-line">A claim about the future, not a result: nobody has used this yet, so no impact is claimed — only made measurable by construction for when they do.</p>
+        <p class="check">Check: <b>28 golden verdicts</b> spanning eligible / license-required / prohibited · public per-label provenance pages</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<hr class="hr-glow">
+
+<!-- ═══════════════════════ HONESTY ═══════════════════════ -->
+<section id="honest" aria-labelledby="honest-h">
+  <div class="wrap">
+    <div class="sec-head reveal">
+      <div>
+        <span class="eyebrow">06 · Full disclosure</span>
+        <h2 id="honest-h">Honest to the byte</h2>
+      </div>
+      <span class="chip">pack <b>GA@2026-07</b></span>
+    </div>
+    <p class="sec-sub reveal">
+      A compliance product earns trust the way it issues labels: by being exact about what is real.
+      This is not a footnote. It is part of the product.
+    </p>
+
+    <div class="honest-cols">
+      <div class="hcol real reveal">
+        <h3><span aria-hidden="true">●</span> REAL — built &amp; verified</h3>
+        <ul>
+          <li><strong>The engine:</strong> deterministic verdict table, citation grounding, byte-verbatim label QA — 149 green tests behind it.</li>
+          <li><strong>The ledger:</strong> append-only hash chain, per-agent Ed25519 signatures, daily Merkle roots, working tamper localization.</li>
+          <li><strong>The storefront code:</strong> landing → free verdict → Stripe Checkout (test mode) → webhook fulfillment → label delivery → public provenance.</li>
+          <li><strong>The refusal path,</strong> including refund-over-revenue after payment.</li>
+          <li><strong>All 17 screenshots:</strong> captures of real offline runs — nothing mocked or hand-drawn.</li>
+        </ul>
+      </div>
+      <div class="hcol fixture reveal d1">
+        <h3><span aria-hidden="true">◐</span> FIXTURE — synthetic on purpose</h3>
+        <ul>
+          <li><strong>All rule text.</strong> Statute-<em>shaped</em> synthetic data modeled on real cottage-food programs — never verbatim law, and labeled as such on every artifact.</li>
+          <li><strong>The businesses.</strong> Rosa's Bakes, Charlie's Cheesecakes, Kate's Kolaches and the rest are seed fixtures, not customers.</li>
+          <li><strong>The Texas change</strong> shown throughout is a labeled historical replay through the real pipeline — not a live crawl.</li>
+        </ul>
+      </div>
+      <div class="hcol notyet reveal d2">
+        <h3><span aria-hidden="true">○</span> NOT YET — no claims made</h3>
+        <ul>
+          <li><strong>Not deployed.</strong> No public instance exists at time of writing.</li>
+          <li><strong>Nothing sold, nobody using it, no jobs created</strong> — and none implied anywhere on this page.</li>
+          <li><strong>Live Gemini calls are key-gated.</strong> Offline runs use a deterministic mock mirroring the exact response schema; the real <span class="mono">gemini-2.5-flash</span> / <span class="mono">-pro</span> adapters are wired.</li>
+          <li><strong>Stripe has never charged a real card.</strong> Test mode only.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="coverage reveal">
+      <h3>Coverage, stated exactly</h3>
+      <div class="cov-row"><span class="st">Georgia <small>· deep rulepack</small></span><div class="cov-bar"><i style="width:100%"></i></div></div>
+      <div class="cov-row"><span class="st">Texas <small>· deep rulepack + replay</small></span><div class="cov-bar"><i style="width:100%"></i></div></div>
+      <div class="cov-row"><span class="st">California <small>· stub</small></span><div class="cov-bar stub"><i style="width:14%"></i></div></div>
+      <div class="cov-row"><span class="st">Florida <small>· stub</small></span><div class="cov-bar stub"><i style="width:14%"></i></div></div>
+      <p style="margin-top: var(--s4); font-size: .92rem; color: var(--text-mid);">
+        Two states deep beats fifty states shallow. Stub verdicts say so out loud — every CA or FL
+        answer carries an honest coverage note instead of a guess.
+      </p>
+    </div>
+
+    <div class="link-slots">
+      <div class="slot reveal">
+        <div class="k">Live instance</div>
+        <div class="v"><span class="livefill">[LIVE-FILL: Cloud Run URL once deployed]</span></div>
+        <p>The signed ledger will be public at <span class="mono">/ledger.jsonl</span> on the live instance — verifiable with <span class="mono">npm run verify-ledger</span>.</p>
+      </div>
+      <div class="slot reveal d1">
+        <div class="k">Repository</div>
+        <div class="v"><span class="livefill">[LIVE-FILL: public repo URL at publish]</span></div>
+        <p>Reproduce steps live in <span class="mono">DEMO.md</span> at the repo root; this page and its evidence are served from <span class="mono">docs/</span>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══════════════════════ CLOSE ═══════════════════════ -->
+<section class="close" aria-labelledby="close-h">
+  <div class="wrap">
+    <h2 id="close-h" class="reveal">The law moved.<span class="quiet">Nobody panicked.</span></h2>
+    <p class="reveal d1">
+      Nine fixture labels re-issued themselves, five fixture bakers were notified, and every step
+      signed itself onto a ledger you can re-derive on your own machine in about a minute.
+    </p>
+    <div class="cta-row reveal d2">
+      <a class="btn btn-primary" href="#proof">Run the proof <span class="arr" aria-hidden="true">↑</span></a>
+      <a class="btn btn-ghost" href="#honest">Read what is not real <span class="arr" aria-hidden="true">↑</span></a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="cols">
+      <div>
+        <a class="brand" href="#top" aria-label="OvenClear — back to top">
+          <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true"><rect x="10" y="14" width="44" height="38" rx="8" fill="none" stroke="#C2552B" stroke-width="5"/><circle cx="20" cy="24" r="3.4" fill="#F5B841"/><path d="M20 41l8.5 8 16-16" fill="none" stroke="#F5B841" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          OvenClear
+        </a>
+        <p style="margin-top: var(--s3); max-width: 46ch;">Get cleared to sell what you bake — and stay cleared after the law moves.</p>
+        <div class="built-with" aria-label="Built with">
+          <span class="chip">TypeScript · strict</span>
+          <span class="chip">Node&nbsp;≥&nbsp;18.17</span>
+          <span class="chip">Vitest · 149 green</span>
+          <span class="chip">gemini-2.5-flash / -pro · key-gated</span>
+          <span class="chip">Stripe · test mode</span>
+          <span class="chip">Ed25519 + Merkle</span>
+        </div>
+      </div>
+      <div style="max-width: 420px;">
+        <p><strong>Built for the XPRIZE &ldquo;Build with Gemini&rdquo; hackathon on Devpost</strong> — Category 2, Entrepreneurship &amp; Job Creation. MIT License © 2026 Edy Cu.</p>
+        <p class="fine">
+          All rule text on this page and in the product is FIXTURE / synthetic — statute-shaped data
+          modeled on real cottage-food programs, never verbatim law. The Texas change is a labeled
+          historical replay. Coverage: GA + TX deep, CA + FL stubs. Nothing here is legal advice, and
+          no revenue, customers, users, or adoption are claimed anywhere on this page.
+        </p>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<script>
+(function () {
+  "use strict";
+  var motionOK = window.matchMedia("(prefers-reduced-motion: no-preference)").matches;
+
+  /* reveal on scroll — reduced-motion users see everything immediately */
+  var revealEls = Array.prototype.slice.call(document.querySelectorAll(".reveal"));
+  if (motionOK && "IntersectionObserver" in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) {
+        if (e.isIntersecting) { e.target.classList.add("in"); io.unobserve(e.target); }
+      });
+    }, { rootMargin: "0px 0px -8% 0px", threshold: 0.08 });
+    revealEls.forEach(function (el) { io.observe(el); });
+  } else {
+    revealEls.forEach(function (el) { el.classList.add("in"); });
+  }
+
+  /* header shadow once scrolled */
+  var header = document.getElementById("siteHeader");
+  var onScroll = function () { header.classList.toggle("scrolled", window.scrollY > 8); };
+  window.addEventListener("scroll", onScroll, { passive: true });
+  onScroll();
+
+  /* scroll-spy: mark the section the reader is in (works with reduced motion too) */
+  var navLinks = Array.prototype.slice.call(document.querySelectorAll("#secnav a"));
+  var targets = navLinks
+    .map(function (a) { return document.getElementById(a.getAttribute("href").slice(1)); })
+    .filter(Boolean);
+  if (targets.length && "IntersectionObserver" in window) {
+    var visible = Object.create(null);
+    var spy = new IntersectionObserver(function (entries) {
+      entries.forEach(function (e) { visible[e.target.id] = e.isIntersecting; });
+      var current = "";
+      targets.forEach(function (t) { if (visible[t.id] && !current) { current = t.id; } });
+      navLinks.forEach(function (a) {
+        a.classList.toggle("active", a.getAttribute("href") === "#" + current);
+      });
+    }, { rootMargin: "-30% 0px -55% 0px", threshold: 0 });
+    targets.forEach(function (t) { spy.observe(t); });
+  }
+
+  /* copy buttons — clipboard API with a select-fallback, works from file:// */
+  document.querySelectorAll(".copy-btn").forEach(function (btn) {
+    /* capture the resting label ONCE: re-clicking inside the 1.6s window used to
+       snapshot "copied ✓" as the label and freeze it there */
+    var label = btn.textContent;
+    var timer = null;
+    btn.setAttribute("aria-live", "polite");
+    btn.addEventListener("click", function () {
+      var text = btn.getAttribute("data-copy") || "";
+      var done = function () {
+        btn.textContent = "copied ✓";
+        btn.setAttribute("data-done", "1");
+        if (timer) { clearTimeout(timer); }
+        timer = setTimeout(function () {
+          btn.textContent = label;
+          btn.removeAttribute("data-done");
+        }, 1600);
+      };
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(text).then(done, function () { fallback(); });
+      } else { fallback(); }
+      function fallback() {
+        var ta = document.createElement("textarea");
+        ta.value = text; ta.setAttribute("readonly", "");
+        ta.style.position = "absolute"; ta.style.left = "-9999px";
+        document.body.appendChild(ta); ta.select();
+        try { document.execCommand("copy"); done(); } catch (e) { btn.textContent = "select + copy"; }
+        document.body.removeChild(ta);
+      }
+    });
+  });
+
+  /* print: lazy images are not guaranteed to be decoded when the print job snapshots
+     the page, and an evidence page that prints empty frames is worthless. Promote them
+     all to eager before the dialog opens, and reveal anything the observer never hit. */
+  var eagerAll = function () {
+    document.querySelectorAll('img[loading="lazy"]').forEach(function (img) { img.loading = "eager"; });
+    revealEls.forEach(function (el) { el.classList.add("in"); });
+  };
+  if (window.matchMedia) {
+    var printMQ = window.matchMedia("print");
+    if (printMQ.addEventListener) { printMQ.addEventListener("change", function (e) { if (e.matches) { eagerAll(); } }); }
+  }
+  window.addEventListener("beforeprint", eagerAll);
+})();
+</script>
+</body>
+</html>
