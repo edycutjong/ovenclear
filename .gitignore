@@ -33,3 +33,7 @@ yarn-error.log*
 
 # graphify knowledge graph (kitchen — never judge-facing)
 graphify-out/
+
+# Business evidence pack (npm run evidence:pack) — contains CUSTOMER PII.
+# Assembled for the judges through a private channel; never committed.
+evidence-pack/
