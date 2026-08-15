@@ -1,0 +1,15 @@
+node_modules
+npm-debug.log*
+.git
+.github
+.env
+.env.*
+coverage
+test
+scripts
+docs
+graphify-out
+evidence-pack
+data
+*.md
+.DS_Store
