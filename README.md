@@ -4,7 +4,7 @@
 
 **Cottage-food compliance verdicts + auto-reissued labels, kept true as the law changes.**
 
-![Tests](https://img.shields.io/badge/tests-149%20passing-22C55E?style=for-the-badge)
+![Tests](https://img.shields.io/badge/tests-156%20passing-22C55E?style=for-the-badge)
 ![Golden](https://img.shields.io/badge/golden%20verdicts-0%20flips%2F28-22C55E?style=for-the-badge)
 ![Core](https://img.shields.io/badge/core-offline%20·%20no%20API%20key-C2552B?style=for-the-badge)
 
@@ -21,7 +21,7 @@
 
 **The problem** — every US state writes a different cottage-food law (eligible foods, venues, licenses, and the *exact sentence* that must appear on the label), and a home baker either guesses, gives up, or pays a $250 consult that costs more than her first month's profit — and when the law *changes*, nobody tells her the label she's printing is now non-compliant.
 **The solution** — a $19 statute-cited "can I sell this?" verdict + a print-ready compliant label, and a $5/mo Law-Watch that **re-issues the label automatically** when the law moves — every decision on a signed, tamper-evident ledger.
-**What's built here** — two layers. The deterministic, **fully-offline core**: the rulekit verdict engine (GA/TX deep + CA/FL stubs), a hash-pinned snapshot store, the label composer + byte-verbatim QA gate, the law-watch `diff → materiality → impact → re-issue` loop, a signed hash-chained Ed25519 ledger, and the policy envelope. And the **storefront that sells it** ([`server/`](./server/)): landing page, free verdict, Stripe Checkout, webhook fulfillment, label delivery, and a public per-label provenance page — running on that same core, with no second copy of the decision logic. **149 tests, all green; the core needs no network and no API key.**
+**What's built here** — two layers. The deterministic, **fully-offline core**: the rulekit verdict engine (GA/TX deep + CA/FL stubs), a hash-pinned snapshot store, the label composer + byte-verbatim QA gate, the law-watch `diff → materiality → impact → re-issue` loop, a signed hash-chained Ed25519 ledger, and the policy envelope. And the **storefront that sells it** ([`server/`](./server/)): landing page, free verdict, Stripe Checkout, webhook fulfillment, label delivery, and a public per-label provenance page — running on that same core, with no second copy of the decision logic. **156 tests, all green; the core needs no network and no API key.**
 
 > All rule text is **FIXTURE / synthetic** — statute-*shaped* data modeled on real cottage-food programs, never verbatim law. Every citation quote is a verbatim substring of its pinned snapshot, enforced at rulepack registration. What is real versus deferred is stated honestly, module by module, below; reproduce every claim with [`DEMO.md`](./DEMO.md).
 
@@ -161,7 +161,7 @@ Deployment is [`DEPLOY.md`](./DEPLOY.md) — Cloud Run, GCS-mounted ledger, Secr
 
 ## Test count
 
-**149 tests across 10 files**, all green. Confirm with `npm test`:
+**156 tests across 10 files**, all green. Confirm with `npm test`:
 
 | File | Tests | Covers |
 |---|---:|---|
@@ -174,8 +174,11 @@ Deployment is [`DEPLOY.md`](./DEPLOY.md) — Cloud Run, GCS-mounted ledger, Secr
 | `test/rulekit.engine.test.ts` | 18 | verdict decision table + invariant I1 |
 | `test/label.test.ts` | 20 | label compose + QA gate (I2) + registry |
 | `test/golden.test.ts` | 31 | 28-case golden verdict suite (zero flips) |
+| `test/server.test.ts` | 28 | money handling, webhook authenticity, persistence, legal pages |
 
-> Below the 100-test floor in `COMPLEXITY.md §5`? No — 128 > 100. The golden **case** count is 28
+> Offline core: **128** tests across 9 files. Storefront: **28** more. Total **156**.
+>
+> Below the 100-test floor in `COMPLEXITY.md §5`? No — 128 > 100 on the core alone. The golden **case** count is 28
 > (14 GA + 12 TX + 2 stub-state), verified by `GOLDEN_CASES` in `src/fixtures/golden.ts`; the spec's
 > "60 cases across 10 states" is the production target, honestly scoped to the 2 deep + 2 stub
 > states actually modeled in this build.

@@ -10,6 +10,7 @@ import { Stripe, verifyWebhook, WebhookVerificationError, StripeError } from './
 import { fulfill, newOrder, quote, IntakeError } from './fulfill';
 import { logEvent, type Order, type OrderIntake } from './store';
 import { errorPage, howItWorks, landing, orderPage, provenancePage, quotePage, startForm } from './pages';
+import { privacyPage, refundsPage, termsPage } from './legal';
 
 /**
  * OvenClear storefront.
@@ -125,6 +126,10 @@ async function handle(req: IncomingMessage, res: ServerResponse): Promise<void> 
     if (path === '/') return send(res, 200, landing(cfg));
     if (path === '/how-it-works') return send(res, 200, howItWorks(cfg, world.geminiLive));
     if (path === '/start') return send(res, 200, startForm(cfg));
+    // Stripe will not activate a live account without these reachable.
+    if (path === '/terms') return send(res, 200, termsPage(cfg));
+    if (path === '/privacy') return send(res, 200, privacyPage(cfg));
+    if (path === '/refunds') return send(res, 200, refundsPage(cfg));
     if (path === '/success') return handleSuccess(url, res);
     if (path === '/ledger.jsonl') {
       return send(res, 200, world.ledger.toJsonl(), 'application/x-ndjson; charset=utf-8');

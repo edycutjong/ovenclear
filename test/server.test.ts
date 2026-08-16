@@ -8,6 +8,7 @@ import { buildProductionWorld, type ProdWorld } from '../server/world';
 import { ProductResolver } from '../server/product-resolver';
 import { fulfill, newOrder, quote, IntakeError } from '../server/fulfill';
 import { Store, type OrderIntake } from '../server/store';
+import { privacyPage, refundsPage, termsPage } from '../server/legal';
 import { DecisionLedger } from '../src/core/ledger/ledger';
 import { verifyChain } from '../src/core/ledger/verify';
 import type { Config } from '../server/config';
@@ -265,5 +266,60 @@ describe('persistence', () => {
     expect(existsSync(nested)).toBe(false);
     Store.open(nested);
     expect(existsSync(nested)).toBe(true);
+  });
+});
+
+// ── legal pages ─────────────────────────────────────────────────────────────
+
+/**
+ * Stripe will not activate a live account for a site without reachable terms
+ * and privacy pages, so these are a deployment gate rather than cosmetics.
+ * The content assertions pin the two disclosures we would most regret losing
+ * silently: that the rule text is synthetic, and that the ledger publishes the
+ * product description exactly as the customer typed it.
+ */
+describe('legal pages', () => {
+  const cfg = () => testConfig();
+
+  it('renders all three pages with their own titles', () => {
+    expect(termsPage(cfg())).toContain('<title>Terms of Service — OvenClear</title>');
+    expect(privacyPage(cfg())).toContain('<title>Privacy Policy — OvenClear</title>');
+    expect(refundsPage(cfg())).toContain('<title>Refund Policy — OvenClear</title>');
+  });
+
+  it('links all three from every page footer, so Stripe review can reach them', () => {
+    for (const html of [termsPage(cfg()), privacyPage(cfg()), refundsPage(cfg())]) {
+      expect(html).toContain('href="/terms"');
+      expect(html).toContain('href="/privacy"');
+      expect(html).toContain('href="/refunds"');
+    }
+  });
+
+  it('states in the terms that the rule text is not real law', () => {
+    const html = termsPage(cfg());
+    expect(html).toContain('not a law firm');
+    expect(html).toMatch(/FIXTURE data/);
+  });
+
+  it('discloses that the public ledger republishes the typed product description', () => {
+    const html = privacyPage(cfg());
+    expect(html).toContain('productInput');
+    expect(html).toContain('exactly as you typed it');
+  });
+
+  it('discloses that ledger rows cannot be deleted, and why', () => {
+    expect(privacyPage(cfg())).toContain('cannot delete ledger rows');
+  });
+
+  it('promises a refund for both automatic refusal paths', () => {
+    const html = refundsPage(cfg());
+    expect(html).toContain('quality gate');
+    expect(html).toContain('refunded in full');
+  });
+
+  it('uses the configured support email rather than a hardcoded one', () => {
+    const html = privacyPage(testConfig({ supportEmail: 'hello@ovenclear.test' }));
+    expect(html).toContain('mailto:hello@ovenclear.test');
+    expect(html).not.toContain('support@example.com');
   });
 });

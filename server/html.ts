@@ -83,6 +83,12 @@ pre.label{background:var(--bg);border:1px dashed var(--line);border-radius:9px;p
 code,.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:13px}
 .hash{color:var(--muted);word-break:break-all}
 
+.prose h2{font-size:17px;margin:26px 0 8px}
+.prose h2:first-child{margin-top:0}
+.prose p{margin:0 0 12px;line-height:1.62}
+.prose ul.clean{margin-bottom:14px}
+.prose code{background:var(--line);padding:1px 5px;border-radius:4px;font-size:13px}
+
 ul.clean{list-style:none;padding:0;margin:0}
 ul.clean li{padding:9px 0;border-bottom:1px solid var(--line)}
 ul.clean li:last-child{border-bottom:0}
@@ -143,6 +149,11 @@ ${o.body}
     this is not legal advice. ·
     <a href="/verify/">Public decision ledger</a> ·
     <a href="/how-it-works">How it works</a>
+  </p>
+  <p style="margin:8px 0 0">
+    <a href="/terms">Terms</a> ·
+    <a href="/privacy">Privacy</a> ·
+    <a href="/refunds">Refunds</a>
   </p>
 </div></footer>
 ${o.script ? `<script>${o.script}</script>` : ''}
