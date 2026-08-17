@@ -1,6 +1,6 @@
 {
   "name": "@ovenclear/core",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "OvenClear offline-testable core: rulekit engine, snapshot store, label engine + QA gate, law-watch loop, signed decision ledger, policy envelope. All rule data is FIXTURE/SYNTHETIC.",
   "type": "module",
