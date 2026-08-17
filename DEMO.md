@@ -93,7 +93,18 @@ for per-label QR provenance. Static captures are in [`docs/evidence/`](docs/evid
 
 ## What is NOT proven here
 
-Stated plainly, because the rubric asks: this repo is the **offline core**. The production web app
-and landing page with live checkout are not built; there is no deployed service, no live Gemini
-key, no Stripe charges, and no real customers. Those are business milestones, not code claims, and
-this file will not pretend otherwise.
+Stated plainly, because the rubric asks.
+
+**What is now true.** The storefront is built and **deployed at https://ovenclear.edycu.dev** —
+public, free to use, serving real verdicts from the same core these tests exercise. Verified
+18 Aug 2026: every route returns 200, and the refusal path holds in production (a cheesecake in
+Georgia is declined, quoting the refrigeration rule, with no checkout button rendered at all).
+
+**What is still NOT proven.** No live Gemini key is configured, so the model-assisted rescue pass
+has never executed in the deployed application — the deterministic core answers every request.
+Stripe runs on a placeholder test key, so **no real charge can be taken and none has been**. There
+are **zero customers and $0 revenue**. The hosting tier has an ephemeral filesystem, so the ledger
+re-seeds from genesis on a cold start; durable storage is the Cloud Run target in `DEPLOY.md`, which
+is not deployed. All rule text remains **synthetic, statute-shaped fixture data — never verbatim law**.
+
+Those are business milestones, not code claims, and this file will not pretend otherwise.
