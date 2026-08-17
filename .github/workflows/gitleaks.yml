@@ -1,0 +1,32 @@
+name: gitleaks
+
+# Secret scan over the FULL history, not just the diff. GitHub's native secret
+# scanning only matches known provider patterns on pushed commits; gitleaks also
+# catches project-shaped secrets (LEDGER_KEY_NAMESPACE, GEMINI_API_KEY,
+# STRIPE_SECRET_KEY) and walks every commit ever made — which is the check that
+# matters for a repo that goes public at submission.
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  scan:
+    name: "Secret scan (full history)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout (full history)
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # the whole point is to scan the past
+
+      - name: gitleaks
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
