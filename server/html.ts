@@ -54,6 +54,21 @@ h3{font-size:16px;margin:22px 0 8px}
 .btn:active{transform:translateY(1px)}
 .btn:disabled{opacity:.5;cursor:not-allowed}
 .btn.secondary{background:transparent;color:var(--crust);border:1px solid var(--line)}
+/* Declared after .btn.secondary on purpose: .btn.secondary and .btn:hover have equal
+   specificity, so the later rule wins and a plain .btn:hover would never repaint a
+   secondary button. This restores hover feedback on the label-delivery buttons. */
+.btn.secondary:hover{background:var(--warn-bg);border-color:var(--crust);color:var(--crust-dark)}
+.brand:hover{color:var(--crust)}
+/* Body links are underlined by default, so underline-on-hover is a no-op —
+   the feedback has to be a colour shift. */
+a{transition:color .15s ease}
+a:hover{color:var(--crust-dark);text-decoration:underline}
+a:focus-visible,.btn:focus-visible,.navlink:focus-visible,.brand:focus-visible{
+  outline:2px solid var(--crust);outline-offset:2px;border-radius:4px}
+@media (prefers-reduced-motion:reduce){
+  *{transition-duration:.01ms !important;animation-duration:.01ms !important}
+  .btn:active{transform:none}
+}
 
 .card{background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
   padding:22px;box-shadow:var(--shadow);margin:18px 0}

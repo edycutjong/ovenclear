@@ -119,11 +119,16 @@
 
   /* ---- label artifact ---- */
   .label-wrap { display: grid; grid-template-columns: 1fr 190px; gap: 22px; align-items: start; }
+  /* Grid items default to min-width:auto, so one long unbreakable token in the label
+     (a hash, a URL) pushes the column past the viewport and scrolls the whole page
+     sideways on a phone. min-width:0 + wrapping keeps the artifact inside its column. */
+  .label-wrap > * { min-width: 0; }
   @media (max-width: 720px) { .label-wrap { grid-template-columns: 1fr; } }
   .label {
     background: #FBF4E9; color: #241a12; border-radius: 10px; padding: 20px 22px;
     font-family: var(--mono); font-size: 13px; line-height: 1.65; border: 1px solid #e6d6bf;
     box-shadow: 0 20px 40px -24px rgba(0,0,0,.9);
+    overflow-wrap: anywhere; word-break: break-word;
   }
   .label .l-biz { font-weight: 700; font-size: 15px; }
   .label .mandated { display: block; margin: 8px 0; padding: 7px 9px; background: #F5B84122; border: 1px dashed #C2552B; border-radius: 6px; font-weight: 700; color: #7a3417; }
