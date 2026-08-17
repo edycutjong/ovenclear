@@ -44,13 +44,20 @@ jobs:
           config-file: release-please-config.json
           manifest-file: .release-please-manifest.json
 
+      # Outputs go through the environment, never through ${{ }} interpolation:
+      # `pr` is a JSON blob containing the whole PR body, which the shell would
+      # otherwise try to parse as code.
       - name: Summarise
         if: always()
+        env:
+          RELEASE_CREATED: ${{ steps.release.outputs.release_created }}
+          TAG_NAME: ${{ steps.release.outputs.tag_name }}
+          PR_NUMBER: ${{ steps.release.outputs.prs_created }}
         run: |
-          if [ "${{ steps.release.outputs.release_created }}" = "true" ]; then
-            echo "Released \`${{ steps.release.outputs.tag_name }}\`" >> "$GITHUB_STEP_SUMMARY"
-          elif [ -n "${{ steps.release.outputs.pr }}" ]; then
-            echo "Release PR is open and up to date." >> "$GITHUB_STEP_SUMMARY"
+          if [ "$RELEASE_CREATED" = "true" ]; then
+            echo "Released \`${TAG_NAME}\`" >> "$GITHUB_STEP_SUMMARY"
+          elif [ "$PR_NUMBER" = "true" ]; then
+            echo "Release PR opened / updated." >> "$GITHUB_STEP_SUMMARY"
           else
             echo "No releasable commits since the last release." >> "$GITHUB_STEP_SUMMARY"
           fi
