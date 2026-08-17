@@ -175,7 +175,10 @@ h1 .quiet{color:var(--muted);display:block;font-size:.72em;letter-spacing:-.02em
 .chip-rail{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
 .chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);
   background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
-  white-space:nowrap}
+  white-space:nowrap;max-width:100%}
+/* Below ~400px the longest chip cannot fit on one line, and nowrap pushed the page
+   28px wider than the viewport. Let chips wrap there; the pill shape survives. */
+@media (max-width:420px){.chip{white-space:normal}}
 .chip b{color:var(--ink);font-variant-numeric:tabular-nums}
 .chip .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
 
