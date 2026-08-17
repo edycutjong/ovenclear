@@ -155,7 +155,9 @@ Three design decisions worth reading the code for:
 The signed ledger is public at `/ledger.jsonl` and verifiable with `npm run verify-ledger`.
 Deployment is [`DEPLOY.md`](./DEPLOY.md) — Cloud Run, GCS-mounted ledger, Secret Manager.
 
-> **Live instance:** `[LIVE-FILL: Cloud Run URL once deployed]`
+> **Live instance:** not publicly hosted yet. The storefront runs locally in one command —
+> `docker build -t ovenclear . && docker run -p 8080:8080 ...` (full env and flags in
+> [`DEPLOY.md`](./DEPLOY.md)) — and serves `/`, `/start`, `/verify/`, `/ledger.jsonl` on `localhost:8080`.
 
 ---
 

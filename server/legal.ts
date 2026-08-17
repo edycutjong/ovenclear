@@ -15,9 +15,11 @@
  * these. A privacy policy that describes a system you no longer run is worse
  * than none, because it is a false statement rather than a missing one.
  *
- * `[LIVE-FILL: …]` marks the operator-identity facts that cannot be derived
- * from code — legal entity, address, governing law. Fill them before taking
- * real money. Do not invent them.
+ * Operator identity cannot be derived from code, so these pages state only what
+ * is true today: OvenClear is run by an individual, not an incorporated company,
+ * and no governing law or exclusive venue has been designated. If an entity is
+ * ever registered, replace those sentences with the real entity, address and
+ * chosen law — do not invent them in the meantime.
  */
 
 import type { Config } from './config';
@@ -122,9 +124,13 @@ interfere with its operation, or use it to produce labels for products you do no
 paid. Material changes will be reflected in the "last updated" date above.</p>
 
 <h2>11. Contact and governing law</h2>
-<p>Operator: <strong>[LIVE-FILL: legal entity name and registered address]</strong>.
-Governing law: <strong>[LIVE-FILL: governing law and venue for disputes]</strong>.
-Questions: <a href="mailto:${esc(cfg.supportEmail)}">${esc(cfg.supportEmail)}</a>.</p>`,
+<p>Operator: OvenClear is run by <strong>Edy Cu</strong>, an individual based in Indonesia. There is no
+incorporated company behind it and therefore no registered company number or registered office to
+publish; correspondence is by email. If that changes, this section changes with it.</p>
+<p>Governing law: these terms do not designate an exclusive court or venue, and nothing here removes
+a consumer-protection right you hold under the law of the country you live in. We would much rather
+settle a dispute by email than anywhere else — write to us first.</p>
+<p>Questions: <a href="mailto:${esc(cfg.supportEmail)}">${esc(cfg.supportEmail)}</a>.</p>`,
   });
 }
 
@@ -208,8 +214,9 @@ set cookies necessary for fraud prevention on its own checkout pages.</p>
 <p>The service is not directed to anyone under 18 and we do not knowingly collect their data.</p>
 
 <h2>10. Contact</h2>
-<p>Controller: <strong>[LIVE-FILL: legal entity name and registered address]</strong>.
-Email <a href="mailto:${esc(cfg.supportEmail)}">${esc(cfg.supportEmail)}</a>.</p>`,
+<p>Controller: <strong>Edy Cu</strong>, an individual based in Indonesia, operating as OvenClear. There
+is no incorporated company and no registered office address to publish; reach the controller by
+email at <a href="mailto:${esc(cfg.supportEmail)}">${esc(cfg.supportEmail)}</a>.</p>`,
   });
 }
 
@@ -252,6 +259,6 @@ labels already issued to you remain valid and keep their provenance pages.</p>
 
 <h2>Contact</h2>
 <p><a href="mailto:${esc(cfg.supportEmail)}">${esc(cfg.supportEmail)}</a> ·
-Operator: <strong>[LIVE-FILL: legal entity name]</strong>.</p>`,
+Operator: <strong>Edy Cu</strong>, an individual based in Indonesia, operating as OvenClear.</p>`,
   });
 }

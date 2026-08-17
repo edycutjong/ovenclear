@@ -372,7 +372,9 @@ section { padding: clamp(60px, 8.5vw, 96px) 0; position: relative; }
 }
 .proofstrip b { color: var(--ink-accent); font-weight: 600; }
 .proofstrip .sep { color: var(--line); }
-.proofstrip .go { margin-left: auto; color: var(--ink-primary); white-space: nowrap; }
+.proofstrip .go { margin-left: auto; color: var(--ink-primary); white-space: nowrap;
+  transition: color .18s ease, transform .18s ease; }
+.proofstrip .go:hover, .proofstrip .go:focus-visible { color: var(--text-hi); text-decoration: underline; }
 @media (max-width: 720px) { .proofstrip .sep { display: none; } .proofstrip .go { margin-left: 0; } }
 
 /* ── stat wall (lives inside §04 Run the proof) ─────────── */
@@ -554,7 +556,9 @@ a.frame-link:focus-visible .frame { outline: 2px solid var(--accent); outline-of
 a.frame-link:hover { text-decoration: none; }
 figcaption { font-size: .88rem; color: var(--text-mid); margin-top: var(--s3); max-width: 80ch; }
 figcaption em { color: var(--text-hi); font-style: normal; font-weight: 600; }
-figcaption .open { font-family: var(--mono); font-size: .74rem; color: var(--ink-accent); white-space: nowrap; }
+figcaption .open { font-family: var(--mono); font-size: .74rem; color: var(--ink-accent); white-space: nowrap;
+  transition: color .18s ease, opacity .18s ease; }
+figcaption .open:hover, figcaption .open:focus-visible { color: var(--text-hi); text-decoration: underline; }
 .two-up { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s5); }
 @media (max-width: 900px) { .two-up { grid-template-columns: 1fr; } }
 /* on a short viewport (landscape phone, 13" laptop) a fixed 560px well eats the whole screen */
@@ -651,6 +655,16 @@ figcaption .open { font-family: var(--mono); font-size: .74rem; color: var(--ink
   border: 1px dashed var(--line); border-radius: var(--r-md);
   padding: 12px 16px; display: inline-block; overflow-wrap: anywhere;
 }
+a.livefill {
+  color: var(--text-mid); border-style: solid; text-decoration: none;
+  transition: color var(--t-fast, .18s) ease, border-color var(--t-fast, .18s) ease,
+              background var(--t-fast, .18s) ease, transform var(--t-fast, .18s) ease;
+}
+a.livefill:hover, a.livefill:focus-visible {
+  color: var(--text-hi); border-color: var(--ink-primary);
+  background: var(--card-strong); transform: translateY(-1px);
+}
+a.livefill:active { transform: translateY(1px) scale(.99); }
 .link-slots { display: grid; grid-template-columns: 1fr 1fr; gap: var(--s4); margin-top: var(--s6); }
 @media (max-width: 720px) { .link-slots { grid-template-columns: 1fr; } }
 .slot { border: 1px solid var(--line-subtle); border-radius: var(--r-md); padding: var(--s4) var(--s5); background: var(--card); }
@@ -1303,12 +1317,12 @@ npm run ci   <span class="c"># typecheck → tests → seed:check → self-test 
     <div class="link-slots">
       <div class="slot reveal">
         <div class="k">Live instance</div>
-        <div class="v"><span class="livefill">[LIVE-FILL: Cloud Run URL once deployed]</span></div>
-        <p>The signed ledger will be public at <span class="mono">/ledger.jsonl</span> on the live instance — verifiable with <span class="mono">npm run verify-ledger</span>.</p>
+        <div class="v"><span class="livefill">Not publicly hosted yet — runs locally in one command</span></div>
+        <p>Build and run it yourself with the Docker command in <span class="mono">DEPLOY.md</span>; the storefront comes up on <span class="mono">localhost:8080</span>. The signed ledger is served at <span class="mono">/ledger.jsonl</span> and is verifiable with <span class="mono">npm run verify-ledger</span>.</p>
       </div>
       <div class="slot reveal d1">
         <div class="k">Repository</div>
-        <div class="v"><span class="livefill">[LIVE-FILL: public repo URL at publish]</span></div>
+        <div class="v"><a class="livefill" href="https://github.com/edycutjong/ovenclear">github.com/edycutjong/ovenclear</a></div>
         <p>Reproduce steps live in <span class="mono">DEMO.md</span> at the repo root; this page and its evidence are served from <span class="mono">docs/</span>.</p>
       </div>
     </div>
