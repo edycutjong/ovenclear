@@ -210,6 +210,13 @@ means a missing variable fails step 3 instead of the live site.
 CI needs only `VERCEL_TOKEN` (secret) plus `VERCEL_ORG_ID` and
 `VERCEL_PROJECT_ID` (repository variables).
 
+The Vercel **Git integration is deliberately disconnected**. It could never have
+worked here — `api/index.js` is gitignored, so a clone-and-build deploy fails with
+`The pattern "api/index.js" defined in 'functions' doesn't match any Serverless
+Functions` — and even if it had, it would have been a second deploy path racing
+this one for the production domain with no smoke gate in front of it. This
+workflow is the only thing that deploys OvenClear.
+
 You can run the same gate by hand against anything: `npm run smoke -- https://ovenclear.edycu.dev`.
 
 ## Releases
