@@ -1,0 +1,56 @@
+name: Release
+
+# Automated semantic versioning driven by Conventional Commits.
+#
+# Model: release-PR, not release-on-push. Every push to main updates (or opens) a
+# single "chore(main): release X.Y.Z" pull request that carries the computed
+# version bump, the regenerated CHANGELOG.md, and the package.json/package-lock
+# version. Nothing is tagged or published until a human merges that PR — which is
+# the point: a live, judged deployment should never be version-bumped by a robot
+# that nobody looked at. Merging the PR is what cuts the git tag and the GitHub
+# Release, and that merge commit also re-runs CI + the production deploy.
+#
+# Baseline is 0.1.0 (see .release-please-manifest.json): the version package.json
+# has carried since the first commit. There are no tags in this repo's history, so
+# the first release PR computes its bump from every commit ever made and the first
+# CHANGELOG.md covers the whole build.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+# Never let two release-please runs race on the same release PR.
+concurrency:
+  group: release-please-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release-please:
+    name: "Release PR / tag"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run release-please
+        id: release
+        uses: googleapis/release-please-action@v4
+        with:
+          # The built-in token is enough: this repo publishes nothing to npm and
+          # needs no cross-repo access.
+          token: ${{ secrets.GITHUB_TOKEN }}
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+
+      - name: Summarise
+        if: always()
+        run: |
+          if [ "${{ steps.release.outputs.release_created }}" = "true" ]; then
+            echo "Released \`${{ steps.release.outputs.tag_name }}\`" >> "$GITHUB_STEP_SUMMARY"
+          elif [ -n "${{ steps.release.outputs.pr }}" ]; then
+            echo "Release PR is open and up to date." >> "$GITHUB_STEP_SUMMARY"
+          else
+            echo "No releasable commits since the last release." >> "$GITHUB_STEP_SUMMARY"
+          fi
