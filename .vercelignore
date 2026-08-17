@@ -2,6 +2,8 @@
 # deployed function, so it must not be excluded here.
 node_modules
 .git
+.github
+.vercel
 test
 graphify-out
 evidence-pack

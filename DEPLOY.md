@@ -176,6 +176,52 @@ npm run verify-ledger -- /tmp/prod-ledger.jsonl
 
 ---
 
+## The automated path: CI/CD to Vercel
+
+Cloud Run above is the durable target. The **live judged instance**
+(<https://ovenclear.edycu.dev>) runs on Vercel and is deployed by
+`.github/workflows/ci.yml` → *Stage 4 · Deploy*, on every push to `main` that
+clears typecheck, the 156 tests, and the offline proof stage.
+
+Because that URL has to stay up, the job is a staged rollout rather than a plain
+`vercel deploy --prod`:
+
+1. `npm run build:vercel` bundles `api/_app.ts` → `api/index.js` with esbuild.
+   That file is gitignored (an artifact, not source) and `.vercelignore`
+   deliberately does **not** exclude it — skip this step and the deployed
+   function simply does not exist.
+2. `vercel deploy --prod --skip-domain` publishes a real production deployment
+   but leaves `ovenclear.edycu.dev` on the last known-good one.
+3. `node scripts/smoke.mjs <new-deployment-url>` runs the gate: `/healthz` must
+   return `ok`, `/` must serve the storefront, and `POST /quote` for the GA
+   cheesecake case must come back as a refusal with **zero** occurrences of
+   `checkout` or `<button`. A deploy that fails here never sees traffic.
+4. Only then is the custom domain moved. A production deployment does not
+   reliably drag an aliased custom domain with it, so the job checks and, if
+   needed, runs `vercel alias set` explicitly — then smokes the live domain as a
+   hard gate.
+
+Runtime configuration (`NODE_ENV`, `DATA_DIR`, `PRICE_USD`,
+`LEDGER_KEY_NAMESPACE`, `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET`,
+`BASE_URL`) lives in the Vercel project's **Production** environment, not in the
+workflow. `server/config.ts` refuses to boot in production without it, which
+means a missing variable fails step 3 instead of the live site.
+
+CI needs only `VERCEL_TOKEN` (secret) plus `VERCEL_ORG_ID` and
+`VERCEL_PROJECT_ID` (repository variables).
+
+You can run the same gate by hand against anything: `npm run smoke -- https://ovenclear.edycu.dev`.
+
+## Releases
+
+Versioning is automated by [release-please](https://github.com/googleapis/release-please-action)
+(`.github/workflows/release.yml`) and driven by Conventional Commits. Pushing to
+`main` opens or updates a single `chore(main): release X.Y.Z` pull request
+carrying the computed bump, the regenerated `CHANGELOG.md`, and the
+`package.json` / `package-lock.json` version. Merging that PR cuts the git tag
+and the GitHub Release — and, because it is a push to `main`, re-runs CI and the
+deploy above. Nothing is tagged without a human merging.
+
 ## Operating notes
 
 - **Logs are evidence.** Every ledger row and order transition is also written to
