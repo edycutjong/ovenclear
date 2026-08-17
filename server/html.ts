@@ -121,6 +121,108 @@ footer.site{margin-top:56px;border-top:1px solid var(--line);background:var(--ca
 footer.site a{color:var(--muted)}
 .fixture{font-size:12.5px;color:var(--muted);background:var(--warn-bg);border:1px solid var(--line);
   border-radius:9px;padding:12px 14px;margin:20px 0}
+
+/* ══════════════════════════════════════════════════════════════════════════
+   FAMILY SYSTEM — the motifs shared with docs/index.html so the standalone
+   landing page and the live product read as one design family.
+   Everything below is ADDITIVE: no existing selector is redefined, so the
+   form, quote, order, provenance and legal pages render exactly as before.
+   ══════════════════════════════════════════════════════════════════════════ */
+:root{
+  --accent:#F5B841;
+  --grad-hero:linear-gradient(135deg,var(--crust) 0%,var(--accent) 100%);
+  --mesh:
+    radial-gradient(ellipse 70% 60% at 8% -10%,rgba(194,85,43,.13),transparent 62%),
+    radial-gradient(ellipse 50% 45% at 96% -6%,rgba(245,184,65,.14),transparent 60%);
+}
+@media (prefers-color-scheme:dark){
+  :root{
+    --mesh:
+      radial-gradient(ellipse 70% 60% at 8% -10%,rgba(194,85,43,.30),transparent 62%),
+      radial-gradient(ellipse 50% 45% at 96% -6%,rgba(245,184,65,.13),transparent 60%);
+  }
+}
+
+/* Sticky masthead — the page scrolls under a frosted bar. */
+header.site{position:sticky;top:0;z-index:20;
+  background:color-mix(in srgb,var(--card) 82%,transparent);
+  backdrop-filter:saturate(1.6) blur(10px);-webkit-backdrop-filter:saturate(1.6) blur(10px)}
+@supports not (backdrop-filter:blur(4px)){header.site{background:var(--card)}}
+
+/* Hero: mesh wash that bleeds past .wrap without creating a scrollbar. */
+/* inset-inline of calc(50% - 50vw) reaches the viewport edges exactly; body's
+   overflow-x:clip absorbs the scrollbar-width rounding so no page ever scrolls
+   sideways because of the wash. */
+body{overflow-x:clip}
+.hero.lp{position:relative;padding:56px 0 34px}
+.hero.lp::before{content:"";position:absolute;top:-62px;bottom:0;
+  left:calc(50% - 50vw);right:calc(50% - 50vw);background:var(--mesh);
+  pointer-events:none;z-index:-1}
+.hero.lp>*{position:relative}
+
+.eyebrow{display:block;font:600 12px/1 ui-monospace,SFMono-Regular,Menlo,monospace;
+  letter-spacing:.14em;text-transform:uppercase;color:var(--crust);margin:0 0 16px}
+h1 .grad{background:var(--grad-hero);-webkit-background-clip:text;background-clip:text;
+  -webkit-text-fill-color:transparent;color:var(--crust)}
+h1 .quiet{color:var(--muted);display:block;font-size:.72em;letter-spacing:-.02em;margin-top:6px}
+
+.cta-row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin:26px 0 0}
+.btn .arr{display:inline-block;transition:transform .18s ease}
+.btn:hover .arr{transform:translateX(3px)}
+.btn.lg{padding:15px 26px;font-size:17px;box-shadow:0 8px 22px rgba(194,85,43,.24)}
+
+/* Chip rail — small factual tags. Scrolls itself rather than the page. */
+.chip-rail{display:flex;flex-wrap:wrap;gap:8px;margin:18px 0 0;padding:0;list-style:none}
+.chip{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);
+  background:var(--card);border:1px solid var(--line);border-radius:999px;padding:5px 12px;
+  white-space:nowrap}
+.chip b{color:var(--ink);font-variant-numeric:tabular-nums}
+.chip .dot{width:6px;height:6px;border-radius:50%;background:var(--ok);flex:none}
+
+/* Proof strip — only numbers a command reproduces. */
+.proofstrip{display:flex;flex-wrap:wrap;align-items:baseline;gap:10px 18px;margin:28px 0 0;
+  padding:16px 18px;border:1px solid var(--line);border-radius:var(--radius);background:var(--card);
+  font-size:14px;color:var(--muted);box-shadow:var(--shadow)}
+.proofstrip b{color:var(--ink);font-size:17px;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
+.proofstrip .sep{color:var(--line)}
+.proofstrip .go{margin-left:auto;font-size:13px;font-weight:600;color:var(--crust);text-decoration:none}
+.proofstrip .go:hover{text-decoration:underline}
+
+/* Verdict split — the yes and the no, side by side. */
+.split{display:grid;gap:14px;margin:18px 0}
+@media(min-width:720px){.split{grid-template-columns:1fr 1fr}}
+.split .card{margin:0;height:100%;display:flex;flex-direction:column}
+.split .card p:last-child{margin-bottom:0}
+.card.yes{border-top:3px solid var(--ok)}
+.card.no{border-top:3px solid var(--bad)}
+.card .toprow{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.card .toprow h2{margin:0;font-size:19px}
+
+/* Step rail — the four-agent machinery, numbered. */
+.steprail{display:grid;gap:0;margin:18px 0;counter-reset:step}
+.steprail .step{position:relative;padding:0 0 22px 46px;border-left:2px solid var(--line);
+  margin-left:15px;counter-increment:step}
+.steprail .step:last-child{border-left-color:transparent;padding-bottom:0}
+.steprail .step::before{content:counter(step);position:absolute;left:-16px;top:-2px;
+  width:30px;height:30px;border-radius:50%;background:var(--crust);color:#fff;
+  display:grid;place-items:center;font:700 13px/1 ui-sans-serif,system-ui,sans-serif}
+.steprail .step h3{margin:4px 0 6px;font-size:16px}
+.steprail .step p{margin:0;color:var(--muted);font-size:14.5px;line-height:1.62}
+
+/* Honesty ribbon — the disclosure, deliberately impossible to miss. */
+.ribbon{display:grid;gap:10px;margin:28px 0;padding:18px 20px;border-radius:var(--radius);
+  border:1px solid var(--line);border-left:3px solid var(--wheat);background:var(--warn-bg)}
+@media(min-width:720px){.ribbon{grid-template-columns:auto 1fr;gap:20px;align-items:start}}
+.ribbon .k{font:700 11px/1.4 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.14em;
+  text-transform:uppercase;color:var(--warn);white-space:nowrap;padding-top:3px}
+.ribbon p{margin:0;font-size:14px;line-height:1.62;color:var(--ink)}
+
+/* Entrance motion — opt-out honoured by the global reduced-motion guard. */
+@media (prefers-reduced-motion:no-preference){
+  .reveal{opacity:0;transform:translateY(10px);animation:rise .6s cubic-bezier(.22,.9,.3,1) forwards}
+  .reveal.d1{animation-delay:.07s}.reveal.d2{animation-delay:.14s}.reveal.d3{animation-delay:.21s}
+  @keyframes rise{to{opacity:1;transform:none}}
+}
 `;
 
 export interface LayoutOpts {

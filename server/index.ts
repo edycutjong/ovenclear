@@ -343,8 +343,28 @@ async function handleWebhook(req: IncomingMessage, res: ServerResponse): Promise
 
 // ── boot ────────────────────────────────────────────────────────────────────
 
+/**
+ * Build the world exactly once per process.
+ *
+ * The long-running server calls this at boot; the serverless adapter in
+ * `api/index.ts` calls it on each invocation and gets the cached promise on
+ * warm instances. Same code path, same ledger, no second copy of the wiring.
+ */
+let worldReady: Promise<void> | null = null;
+
+export function ensureWorld(): Promise<void> {
+  if (!worldReady) {
+    worldReady = buildProductionWorld(cfg).then((w) => {
+      world = w;
+    });
+  }
+  return worldReady;
+}
+
+export { handle };
+
 async function main(): Promise<void> {
-  world = await buildProductionWorld(cfg);
+  await ensureWorld();
 
   const server = createServer((req, res) => {
     const started = Date.now();
@@ -385,7 +405,11 @@ async function main(): Promise<void> {
   process.on('SIGINT', shutdown('SIGINT'));
 }
 
-main().catch((e: Error) => {
-  process.stderr.write(`fatal: ${e.message}\n`);
-  process.exit(1);
-});
+// On a serverless platform there is no port to bind — `api/index.ts` drives the
+// same `handle()` per request instead. Everywhere else this is the entrypoint.
+if (!process.env.VERCEL) {
+  main().catch((e: Error) => {
+    process.stderr.write(`fatal: ${e.message}\n`);
+    process.exit(1);
+  });
+}

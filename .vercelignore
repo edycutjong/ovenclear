@@ -1,0 +1,9 @@
+# Vercel uses this INSTEAD of .gitignore. api/index.js is gitignored but is the
+# deployed function, so it must not be excluded here.
+node_modules
+.git
+test
+graphify-out
+evidence-pack
+docs
+*.md

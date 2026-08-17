@@ -39,44 +39,93 @@ export function landing(cfg: Config): string {
       'A statute-cited "can I sell this?" verdict for home bakers, plus a print-ready compliant ' +
       'label — and it re-issues itself when the law changes.',
     body: `
-<section class="hero">
-  <h1>Find out if you can legally sell it —<br>and get the label that proves it.</h1>
-  <p class="lede">
+<section class="hero lp">
+  <span class="eyebrow reveal">Cottage-food compliance · Georgia &amp; Texas, two states deep</span>
+  <h1 class="reveal d1">A $250 lawyer question,<br>answered for <span class="grad">$${cfg.priceUsd}</span>
+    <span class="quiet">— and kept true after the law moves.</span></h1>
+  <p class="lede reveal d2">
     Every state writes its own cottage-food law: which foods you may sell, where you may sell them,
     and the <em>exact sentence</em> that has to appear on your label. Guess wrong and you lose your
-    booth. A consult costs $250. This costs <span class="price">$${cfg.priceUsd}</span>.
+    booth. OvenClear gives you a statute-cited verdict and a print-ready label — then re-issues that
+    label when the rule underneath it changes.
   </p>
-  <a class="btn" href="/start">Check my product →</a>
-  &nbsp;&nbsp;<a class="navlink" href="/how-it-works">See how it works</a>
+  <div class="cta-row reveal d3">
+    <a class="btn lg" href="/start">Check my product <span class="arr" aria-hidden="true">→</span></a>
+    <a class="btn secondary" href="/how-it-works">See how it works</a>
+  </div>
+  <ul class="chip-rail reveal d3">
+    <li class="chip"><span class="dot" aria-hidden="true"></span>Verdict in one form, no chat box</li>
+    <li class="chip">Label QA gate — mandated sentence byte-verbatim</li>
+    <li class="chip">Every decision on a signed public ledger</li>
+  </ul>
+
+  <div class="proofstrip reveal d3" aria-label="Figures reproducible from the repository">
+    <span><b>156</b> tests green</span><span class="sep" aria-hidden="true">·</span>
+    <span><b>0&nbsp;/&nbsp;28</b> golden verdict flips</span><span class="sep" aria-hidden="true">·</span>
+    <span><b>4</b> signed genesis ledger rows</span>
+    <a class="go" href="/verify/">verify the ledger yourself →</a>
+  </div>
 </section>
 
-<div class="card">
-  <h2 style="margin-top:0">What you get for $${cfg.priceUsd}</h2>
-  <ul class="clean">
-    <li><strong>A verdict, with the rule quoted back at you.</strong> Not "probably fine" — the
-      status, the conditions, and the pinned source text each one came from.</li>
-    <li><strong>A print-ready label.</strong> Your state's mandated sentence reproduced
-      byte-for-byte, allergens derived from your ingredients, net weight, and a QR that resolves to
-      a public provenance page.</li>
-    <li><strong>Your licensing checklist and real fee amounts</strong> — what to file, in what
-      order, and what each step costs.</li>
-    <li><strong>Law-Watch.</strong> When the rule your label depends on changes, the label is
-      re-issued automatically and you get the new one. You do not have to be watching.</li>
-  </ul>
+<h2>The yes and the no, priced the same</h2>
+<div class="split">
+  <div class="card yes">
+    <div class="toprow"><span class="badge ok">Eligible</span><h2>Sourdough at a farmers market</h2></div>
+    <p style="color:var(--muted);margin:0 0 12px">
+      Allowed in Georgia, so you get the whole package: the status, the conditions, the pinned rule
+      text each one came from, your licensing checklist with real fee amounts, and a print-ready
+      label whose mandated sentence is copied byte-for-byte from the source — allergens derived from
+      your ingredients, net weight, and a QR that resolves to a public provenance page.
+    </p>
+    <p style="margin:0"><a href="/start">Run this one →</a></p>
+  </div>
+  <div class="card no">
+    <div class="toprow"><span class="badge bad">Not allowed</span><h2>Cheesecake, same market</h2></div>
+    <p style="color:var(--muted);margin:0 0 12px">
+      Cheesecake is not shelf-stable, and no amount of wanting changes that. OvenClear tells you
+      <em>before</em> you pay, quotes the refrigeration rule that decides it, and never shows you a
+      pay button. A compliance tool that only ever says yes is not a compliance tool — it is a
+      sales funnel with a certificate stapled to it.
+    </p>
+    <p style="margin:0"><a href="/start">Try something that fails →</a></p>
+  </div>
 </div>
 
-<div class="card">
-  <h2 style="margin-top:0">It says no, too</h2>
-  <p style="margin:0 0 10px;color:var(--muted)">
-    Cheesecake is not a shelf-stable baked good, and no amount of wanting changes that. If your
-    state does not allow what you are making, OvenClear tells you before you pay — and quotes the
-    refrigeration rule that decides it. A compliance tool that only ever says yes is not a
-    compliance tool.
-  </p>
-  <p style="margin:0"><a href="/start">Try it with something that fails →</a></p>
+<h2>What the $${cfg.priceUsd} actually buys</h2>
+<div class="steprail">
+  <div class="step">
+    <h3>A verdict with the rule quoted back at you</h3>
+    <p>Not "probably fine" — the status, the conditions, and the pinned snapshot text behind each
+    one. Every verdict pins at least one snapshot hash; that is an enforced invariant, not a habit.</p>
+  </div>
+  <div class="step">
+    <h3>A label that passes its own QA gate</h3>
+    <p>The label is composed, never generated. A gate re-reads the finished artifact and checks each
+    mandated sentence is present verbatim. If it is not, the label does not ship — and if you already
+    paid, you are refunded.</p>
+  </div>
+  <div class="step">
+    <h3>Your licensing checklist, with real fee amounts</h3>
+    <p>What to file, in what order, and what each step costs — so the verdict turns into a booth
+    rather than another open tab.</p>
+  </div>
+  <div class="step">
+    <h3>Law-Watch, $5/mo — the part nobody else does</h3>
+    <p>Snapshots are re-fetched and diffed. When the rule your label depends on materially changes,
+    your label is re-issued automatically and chained to the previous version. You do not have to be
+    watching. Selling a compliance answer that silently rots is the actual harm.</p>
+  </div>
 </div>
 
-${FIXTURE_NOTE}
+<div class="ribbon">
+  <span class="k">Read first</span>
+  <p><strong>Every rule, quote and citation in this service is FIXTURE data</strong> — synthetic,
+  statute-<em>shaped</em> text modeled on real cottage-food programs. It is not verbatim law and
+  OvenClear is not a law firm. What is real is the machinery: the verdict engine, the byte-verbatim
+  label gate, the signed ledger and the law-watch re-issue loop all run exactly as shown. Coverage is
+  <strong>two states deep (GA, TX)</strong> plus two stubs (CA, FL) — not fifty shallow. A compliance
+  product that overstates its coverage is worse than useless.</p>
+</div>
 `,
   });
 }
@@ -85,38 +134,50 @@ export function howItWorks(cfg: Config, geminiLive: boolean): string {
   return layout({
     title: 'How OvenClear works',
     body: `
-<section class="hero"><h1>How it works</h1>
-<p class="lede">Four agents, one signed ledger, and a gate that refuses to ship a wrong label.</p></section>
+<section class="hero lp">
+  <span class="eyebrow reveal">The machinery</span>
+  <h1 class="reveal d1">Four agents, one signed ledger,<br><span class="quiet">and a gate that refuses to ship a wrong label.</span></h1>
+  <p class="lede reveal d2">Nothing here is a language model deciding whether you may sell food. The
+  model is allowed to widen recall on what you typed, and nothing else.</p>
+</section>
+
+<div class="steprail">
+  <div class="step">
+    <h3>Intake</h3>
+    <p>Six structured questions — no chat box. Your free-text product ("my tangy no-knead boule") is
+    matched against a deterministic catalog first. Only if the catalog misses does a Gemini
+    ${esc(geminiLive ? 'Flash' : 'Flash (offline in this instance)')} pass get a turn, and all it may
+    do is name a term that is <em>already in the catalog</em>. The model can widen recall. It cannot
+    invent a product, move it between categories, or turn a refusal into a sale.</p>
+  </div>
+  <div class="step">
+    <h3>Verdict</h3>
+    <p>The rule engine resolves your product, venue and state against a hash-pinned snapshot of the
+    rule text. Every verdict pins at least one snapshot hash — that is an enforced invariant, not a
+    convention. Unknown category? It refuses rather than guesses.</p>
+  </div>
+  <div class="step">
+    <h3>Label + QA gate</h3>
+    <p>The label is <em>composed</em>, never generated: mandated sentences are copied byte-for-byte
+    from the pinned source. Then a QA gate re-reads the finished artifact and checks each mandated
+    sentence is present verbatim. If it is not, the label does not ship — even if you already paid,
+    in which case you are refunded.</p>
+  </div>
+  <div class="step">
+    <h3>Law-Watch</h3>
+    <p>Snapshots are re-fetched and diffed. Gemini classifies each delta as material, immaterial or
+    cosmetic with a scope; unclassifiable deltas default to <em>material</em>, the conservative
+    direction. A material label-text change fans out to every affected label-holder and re-issues
+    their labels automatically, chained to the previous version.</p>
+  </div>
+</div>
 
 <div class="card">
-  <h3 style="margin-top:0">1 · Intake</h3>
-  <p>Six structured questions — no chat box. Your free-text product ("my tangy no-knead boule") is
-  matched against a deterministic catalog first. Only if the catalog misses does a Gemini
-  ${esc(geminiLive ? 'Flash' : 'Flash (offline in this instance)')} pass get a turn, and all it may
-  do is name a term that is <em>already in the catalog</em>. The model can widen recall. It cannot
-  invent a product, move it between categories, or turn a refusal into a sale.</p>
-
-  <h3>2 · Verdict</h3>
-  <p>The rule engine resolves your product, venue and state against a hash-pinned snapshot of the
-  rule text. Every verdict pins at least one snapshot hash — that is an enforced invariant, not a
-  convention. Unknown category? It refuses rather than guesses.</p>
-
-  <h3>3 · Label + QA gate</h3>
-  <p>The label is <em>composed</em>, never generated: mandated sentences are copied byte-for-byte
-  from the pinned source. Then a QA gate re-reads the finished artifact and checks each mandated
-  sentence is present verbatim. If it is not, the label does not ship — even if you already paid,
-  in which case you are refunded.</p>
-
-  <h3>4 · Law-Watch</h3>
-  <p>Snapshots are re-fetched and diffed. Gemini classifies each delta as material, immaterial or
-  cosmetic with a scope; unclassifiable deltas default to <em>material</em>, the conservative
-  direction. A material label-text change fans out to every affected label-holder and re-issues
-  their labels automatically, chained to the previous version.</p>
-
-  <h3>Everything above lands on a signed ledger</h3>
-  <p>Each decision is appended to a hash-chained, per-agent Ed25519-signed log. You can download it
-  and verify every signature and the whole chain yourself — including catching a tampered row and
-  the exact sequence number it happened at. <a href="/verify/">Open the ledger →</a></p>
+  <h2 style="margin-top:0">Everything above lands on a signed ledger</h2>
+  <p style="margin:0 0 14px;color:var(--muted)">Each decision is appended to a hash-chained,
+  per-agent Ed25519-signed log. You can download it and verify every signature and the whole chain
+  yourself — including catching a tampered row and the exact sequence number it happened at.</p>
+  <a class="btn" href="/verify/">Open the ledger <span class="arr" aria-hidden="true">→</span></a>
 </div>
 
 ${FIXTURE_NOTE}

@@ -37,3 +37,8 @@ graphify-out/
 # Business evidence pack (npm run evidence:pack) — contains CUSTOMER PII.
 # Assembled for the judges through a private channel; never committed.
 evidence-pack/
+.vercel/
+.vercel
+
+# Generated Vercel function bundle — built by scripts/build-vercel.mjs, never committed.
+api/index.js

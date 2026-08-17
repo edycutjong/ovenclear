@@ -879,7 +879,7 @@ footer .fine { font-family: var(--mono); font-size: .74rem; color: var(--text-lo
     </aside>
 
     <div class="proofstrip reveal d1" aria-label="Verified figures, reproduced in section 04">
-      <span><b>149</b> tests green</span><span class="sep" aria-hidden="true">·</span>
+      <span><b>156</b> tests green</span><span class="sep" aria-hidden="true">·</span>
       <span><b>0&nbsp;/&nbsp;28</b> golden flips</span><span class="sep" aria-hidden="true">·</span>
       <span><b>78&nbsp;/&nbsp;78</b> signatures verified</span><span class="sep" aria-hidden="true">·</span>
       <span>tamper caught at <b>seq&nbsp;39</b></span>
@@ -1127,7 +1127,7 @@ footer .fine { font-family: var(--mono); font-size: .74rem; color: var(--text-lo
     </p>
 
     <div class="stats">
-      <div class="stat reveal"><div class="n green">149</div><div class="what">tests across 10 files, all green</div><div class="how">npm test</div></div>
+      <div class="stat reveal"><div class="n green">156</div><div class="what">tests across 10 files, all green</div><div class="how">npm test</div></div>
       <div class="stat reveal d1"><div class="n green">0&nbsp;/&nbsp;28</div><div class="what">golden verdict flips — a rulepack edit cannot silently change an answer</div><div class="how">npm run bench</div></div>
       <div class="stat reveal d2"><div class="n">≈24&nbsp;µs</div><div class="what">verdict p50 (p95 ≈35&nbsp;µs) — this machine; the shape holds</div><div class="how">npm run bench</div></div>
       <div class="stat reveal"><div class="n green">12&nbsp;/&nbsp;12</div><div class="what">end-to-end self-test checks, fully offline</div><div class="how">npm run self-test</div></div>
@@ -1180,7 +1180,7 @@ npm run ci   <span class="c"># typecheck → tests → seed:check → self-test 
           <div class="scroll-hint">the full /verify dashboard — scroll ↓ · opens from file://, no server, no fetch</div>
           <img src="evidence/01-dashboard-full.png" width="2560" height="7416" loading="lazy" decoding="async" alt="The complete /verify dashboard in one capture: counters sourced from the fixture ledger, the cleared and refused verdict cards, the print-ready label with QR, the Texas law-watch replay with its re-issue fan-out, the Merkle root and tamper badge, and the signed ledger table.">
         </div>
-        <figcaption><em>The judge-visible dashboard,</em> rendering the committed pipeline export. Captured 2026-07-05, when the core suite stood at 128 tests — it stands at 149 today; regenerate all 17 captures yourself with <span class="mono">npm run evidence</span>. <a class="open" href="evidence/01-dashboard-full.png">open full size ↗</a></figcaption>
+        <figcaption><em>The judge-visible dashboard,</em> rendering the committed pipeline export. Captured 2026-07-05, when the core suite stood at 128 tests — it stands at 156 today; regenerate all 17 captures yourself with <span class="mono">npm run evidence</span>. <a class="open" href="evidence/01-dashboard-full.png">open full size ↗</a></figcaption>
       </figure>
     </div>
   </div>
@@ -1276,7 +1276,7 @@ npm run ci   <span class="c"># typecheck → tests → seed:check → self-test 
       <div class="hcol real reveal">
         <h3><span aria-hidden="true">●</span> REAL — built &amp; verified</h3>
         <ul>
-          <li><strong>The engine:</strong> deterministic verdict table, citation grounding, byte-verbatim label QA — 149 green tests behind it.</li>
+          <li><strong>The engine:</strong> deterministic verdict table, citation grounding, byte-verbatim label QA — 156 green tests behind it.</li>
           <li><strong>The ledger:</strong> append-only hash chain, per-agent Ed25519 signatures, daily Merkle roots, working tamper localization.</li>
           <li><strong>The storefront code:</strong> landing → free verdict → Stripe Checkout (test mode) → webhook fulfillment → label delivery → public provenance.</li>
           <li><strong>The refusal path,</strong> including refund-over-revenue after payment.</li>
@@ -1358,7 +1358,7 @@ npm run ci   <span class="c"># typecheck → tests → seed:check → self-test 
         <div class="built-with" aria-label="Built with">
           <span class="chip">TypeScript · strict</span>
           <span class="chip">Node&nbsp;≥&nbsp;18.17</span>
-          <span class="chip">Vitest · 149 green</span>
+          <span class="chip">Vitest · 156 green</span>
           <span class="chip">gemini-2.5-flash / -pro · key-gated</span>
           <span class="chip">Stripe · test mode</span>
           <span class="chip">Ed25519 + Merkle</span>
