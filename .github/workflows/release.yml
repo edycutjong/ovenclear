@@ -36,7 +36,7 @@ jobs:
     steps:
       - name: Run release-please
         id: release
-        uses: googleapis/release-please-action@v4
+        uses: googleapis/release-please-action@v5
         with:
           # The built-in token is enough: this repo publishes nothing to npm and
           # needs no cross-repo access.
